@@ -32,7 +32,7 @@ import importlib
 import sys
 
 import proc
-import utils
+from utils import setup_utils
 
 FLAGS = flags.FLAGS
 
@@ -47,55 +47,13 @@ flags.FLAGS(sys.argv)
 
 def main():
 
-    ##############################################
-    # Create logger directory
-    ##############################################
-
-    log_dir = FLAGS.log_directory
-
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-
-    # If log_dir is not empty, create a new enumerated sub-directory in it for
-    # logger.
-    list_log_dir = os.listdir(log_dir)
-
-    if len(list_log_dir) != 0:  # For safety, explicitly use len instead of bool
-        existing_log_subdirs = [
-            int(filename) for filename in list_log_dir if filename.isdigit()]
-        if not existing_log_subdirs:
-            existing_log_subdirs = [-1]
-        new_log_subdir = str(max(existing_log_subdirs) + 1)
-        log_dir = os.path.join(log_dir, new_log_subdir)
-        os.mkdir(log_dir)
-    else:
-        log_dir = os.path.join(log_dir, '0')
-        os.mkdir(log_dir)
-
-    ##############################################
-    # Load config
-    ##############################################
-
-    LOG_FILENAME = r'log_file.out'
-    # join the log directory with the log file name
-    LOG_FILENAME = os.path.join(log_dir, LOG_FILENAME)
-
-    logger = logging
-
-    logger.basicConfig(filename=LOG_FILENAME, format='%(asctime)s - %(message)s', level=logging.DEBUG)
-
-    logger.info(FLAGS.log_directory)
-    logger.info(FLAGS.input_directory)
-    logger.info(FLAGS.output_directory)
-
-
-    logger.info('Log directory: {}'.format(log_dir))
+    setup_utils.logger_setup()
 
     ##############################################
     # Safety check on the input and output folder
     ##############################################
 
-    utils.safety_check(FLAGS.input_directory,  FLAGS.output_directory)
+    setup_utils.safety_check()
 
     ##############################################
     # Load the data and perform pre-processing

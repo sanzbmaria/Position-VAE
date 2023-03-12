@@ -1,0 +1,54 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Environments
+.env
+.venv
+venv/
+ENV/
+
+# Virtualenv
+/.Python
+/bin/
+/include/
+/lib/
+/pyvenv.cfg
+pip-selfcheck.json
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Debugging
+logs/
+*.log
+*.swp
+*.bak
+*.cache
+*.out
+
+*/logs/*
+
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+
+# Dependency management
+pip-lock.txt
+pipenv.lock
+
+# data
+data/
