@@ -56,7 +56,7 @@ def logger_setup():
 
     logger = logging
 
-    logger.basicConfig(filename=LOG_FILENAME, format='%(asctime)s - %(message)s', level=logging.DEBUG)
+    logger.basicConfig(filename=LOG_FILENAME, format='%(asctime)s - %(message)s', level=flags.FLAGS.log_level)
 
     logger.info(flags.FLAGS.log_directory)
     logger.info(flags.FLAGS.input_directory)
@@ -66,63 +66,97 @@ def logger_setup():
     logger.info('Log directory: {}'.format(log_dir))
     return logger
 
-def safety_check():
+def safety_check(path, exist=True, is_dir=True):
     """
     Perform a safety check on the input and output folder
 
-    :param input_file: the input folder
-    :param output_file: the output folder
+    Params:
+        folder_path (str): The path of the folder to check
+        exist (bool): If True, check if the folder exists
+        is_dir (bool): If True, check if the folder is a directory, else check if it is a file
 
-    :return: None
+
+    Returns:
+        None
 
     """
 
-    input_file = flags.FLAGS.input_directory
-    output_file = flags.FLAGS.output_directory
+    log.info(f'Starting safety check on {path}')
 
-    log.info('Starting safety check on the input and output folder')
+    if exist:
+        try:
+            # check if the folder exists
+            if not os.path.exists(path):
+                raise FileNotFoundError(f"The input folder {path} does not exist")
+        except FileNotFoundError as e:
+            log.error(e)
+            print(e)
+            exit(1)
+
+    if is_dir:
+        # check if the input file is a folder
+        try:
+            if not os.path.isdir(path):
+                raise NotADirectoryError(f"The {path} is not a folder")
+        except NotADirectoryError as e:
+            log.error(e)
+            print(e)
+            sys.exit(1)
+    else:
+        # check if the input file is a file
+        try:
+            if not os.path.isfile(path):
+                raise FileNotFoundError(f"The {path} is not a file")
+        except FileNotFoundError as e:
+            log.error(e)
+            print(e)
+            sys.exit(1)
 
 
-    try:
-        # check if the input folder exists
-        if not os.path.exists(input_file):
-            raise FileNotFoundError(f"The input folder {flags.FLAGS.input_directory} does not exist")
-    except FileNotFoundError as e:
-        log.error(e)
-        print(e)
-        sys.exit(1)
+def setup_subfolders(folder_path, sub_folders):
+    """
+    Setup the folders for the project if the sub-folders do not exist it will create them
 
-    # check if the input file is a folder
-    try:
-        if not os.path.isdir(input_file):
-            raise NotADirectoryError("The input file is not a folder")
-    except NotADirectoryError as e:
-        log.error(e)
-        print(e)
-        sys.exit(1)
+    Params:
+        folder_path (str): The path of the folder to check
+        sub_folders (list): The list of sub-folders to check
 
-    # check if the output file is a folder and if not create a new folder
-    if not os.path.isdir(output_file):
-        # print a warning
-        print("The output folder does not exist, creating a new folder")
+    :return: None
+    """
+
+    # check if the folder exists
+    if not os.path.exists(folder_path):
         # create the folder
-        os.mkdir(output_file)
+        os.mkdir(folder_path)
+        log.info(f"Created the folder {folder_path}")
 
-    # check if the output folder contains the 'coordinates' and 'hip_center' folders
-    if not os.path.exists(os.path.join(output_file, 'coordinates')):
-        os.mkdir(os.path.join(output_file, 'coordinates'))
-    if not os.path.exists(os.path.join(output_file, 'hip_centered')):
-        os.mkdir(os.path.join(output_file, 'hip_centered'))
+    # check if the sub-folders exists
+    for sub_folder in sub_folders:
+        # check if the sub-folder exists
+        if not os.path.exists(os.path.join(folder_path, sub_folder)):
+            # create the sub-folder
+            os.mkdir(os.path.join(folder_path, sub_folder))
+            log.info(f"Created the folder {sub_folder}")
 
-    # check if the coordinates folder is empty
-    if os.listdir(os.path.join(output_file, 'coordinates')):
-        log.warning("The coordinates folder is not empty, the files will be overwritten")
-    # check if the hip_center folder is empty
-    if os.listdir(os.path.join(output_file, 'hip_centered')):
-        log.warning("The hip_centered folder is not empty, the files will be overwritten")
+        else:
+            log.warn(f"The folder {sub_folder} already exists, the files will be overwritten")
 
 
-    log.info('Safety check on the input and output folder completed')
+def create_folder(folder_path):
+    """
+    Create the folder for the project if the folder does not exist it will create it
+
+    Params:
+        folder_path (str): The path of the folder to check
+
+    :return: None
+    """
+
+    # check if the folder exists
+    if not os.path.exists(folder_path):
+        # create the folder
+        os.mkdir(folder_path)
+        log.info(f"Created the folder {folder_path}")
 
 
 def to_dataframe(dataframe, data, label):

@@ -3,22 +3,17 @@ import logging as log
 import pandas as pd
 import json
 
-def load_json(json_file):
+def json_to_pandas(data):
     """
-    Load the json file and return a pandas dataframe
+    Convert a json file to a pandas dataframe
 
-    :param json_file: the json file to load
+    :param json_file: the json file to convert
 
     :return: df (pd.DataFrame): the dataframe with the json data
 
     """
 
-    log.info('Loading json file')
-
-    # load the json file
-    with open(json_file, 'r') as f:
-        data = json.load(f)
-        log.info('Json file loaded')
+    log.info("Converting json file to pandas dataframe")
 
     # convert the json data to a pandas dataframe
     df = pd.DataFrame(data)
