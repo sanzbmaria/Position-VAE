@@ -1,0 +1,28 @@
+2023-03-12 16:46:08,190 - logs
+2023-03-12 16:46:08,190 - ../data/original/
+2023-03-12 16:46:08,190 - ../data/processed/
+2023-03-12 16:46:08,190 - Log directory: logs/0
+2023-03-12 16:46:08,190 - Starting safety check on the input and output folder
+2023-03-12 16:46:08,190 - Safety check on the input and output folder completed
+2023-03-12 16:46:08,190 - Loading data to process
+2023-03-12 16:46:08,190 - Processing file: wo_2021-12-04_01_enviro_3dcoord.json
+2023-03-12 16:46:10,219 - Converting data to dataframe for label: nose
+2023-03-12 16:46:10,250 - Converting data to dataframe for label: head
+2023-03-12 16:46:10,274 - Converting data to dataframe for label: neck
+2023-03-12 16:46:10,304 - Converting data to dataframe for label: RShoulder
+2023-03-12 16:46:10,328 - Converting data to dataframe for label: RHand
+2023-03-12 16:46:10,372 - Converting data to dataframe for label: Lshoulder
+2023-03-12 16:46:10,402 - Converting data to dataframe for label: Lhand
+2023-03-12 16:46:10,448 - Converting data to dataframe for label: hip
+2023-03-12 16:46:10,485 - Converting data to dataframe for label: RKnee
+2023-03-12 16:46:10,518 - Converting data to dataframe for label: RFoot
+2023-03-12 16:46:10,556 - Converting data to dataframe for label: LKnee
+2023-03-12 16:46:10,594 - Converting data to dataframe for label: Lfoot
+2023-03-12 16:46:10,631 - Converting data to dataframe for label: tail
+2023-03-12 16:46:10,886 - Interpolating data
+2023-03-12 16:46:11,176 - Percentage of outliers for label: 0 column: x: 0.0
+2023-03-12 16:46:11,176 - Percentage of outliers for label: 0 column: y: 0.21948356145054324
+2023-03-12 16:46:11,176 - Percentage of outliers for label: 0 column: z: 0.0
+2023-03-12 16:46:11,181 - Interpolating outliers for label: 0 column: x
+2023-03-12 16:46:11,196 - Interpolating outliers for label: 0 column: y
+2023-03-12 16:46:11,205 - Interpolating outliers for label: 0 column: z

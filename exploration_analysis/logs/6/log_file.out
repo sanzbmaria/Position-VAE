@@ -1,0 +1,115 @@
+2023-03-12 16:59:12,876 - logs
+2023-03-12 16:59:12,876 - ../data/original/
+2023-03-12 16:59:12,876 - ../data/processed/
+2023-03-12 16:59:12,876 - Log directory: logs/6
+2023-03-12 16:59:12,876 - Starting safety check on the input and output folder
+2023-03-12 16:59:12,876 - Safety check on the input and output folder completed
+2023-03-12 16:59:12,876 - Loading data to process
+2023-03-12 16:59:12,876 - Processing file: wo_2021-12-04_01_enviro_3dcoord.json
+2023-03-12 16:59:14,805 - Converting data to dataframe for label: nose
+2023-03-12 16:59:14,826 - Converting data to dataframe for label: head
+2023-03-12 16:59:14,847 - Converting data to dataframe for label: neck
+2023-03-12 16:59:14,870 - Converting data to dataframe for label: RShoulder
+2023-03-12 16:59:14,894 - Converting data to dataframe for label: RHand
+2023-03-12 16:59:14,920 - Converting data to dataframe for label: Lshoulder
+2023-03-12 16:59:14,945 - Converting data to dataframe for label: Lhand
+2023-03-12 16:59:14,974 - Converting data to dataframe for label: hip
+2023-03-12 16:59:15,005 - Converting data to dataframe for label: RKnee
+2023-03-12 16:59:15,044 - Converting data to dataframe for label: RFoot
+2023-03-12 16:59:15,084 - Converting data to dataframe for label: LKnee
+2023-03-12 16:59:15,119 - Converting data to dataframe for label: Lfoot
+2023-03-12 16:59:15,169 - Converting data to dataframe for label: tail
+2023-03-12 16:59:15,439 - Interpolating data
+2023-03-12 16:59:15,739 - Percentage of outliers for label: 0 column: x: 0.0
+2023-03-12 16:59:15,739 - Percentage of outliers for label: 0 column: y: 0.21948356145054324
+2023-03-12 16:59:15,739 - Percentage of outliers for label: 0 column: z: 0.0
+2023-03-12 16:59:15,740 - Interpolating outliers for label: 0 column: x
+2023-03-12 16:59:15,752 - Interpolating outliers for label: 0 column: y
+2023-03-12 16:59:15,760 - Interpolating outliers for label: 0 column: z
+2023-03-12 16:59:15,769 - Done interpolating outliers for label: 0
+2023-03-12 16:59:15,800 - Percentage of outliers for label: 1 column: x: 0.0
+2023-03-12 16:59:15,800 - Percentage of outliers for label: 1 column: y: 0.2600592634401016
+2023-03-12 16:59:15,800 - Percentage of outliers for label: 1 column: z: 0.0
+2023-03-12 16:59:15,801 - Interpolating outliers for label: 1 column: x
+2023-03-12 16:59:15,811 - Interpolating outliers for label: 1 column: y
+2023-03-12 16:59:15,817 - Interpolating outliers for label: 1 column: z
+2023-03-12 16:59:15,822 - Done interpolating outliers for label: 1
+2023-03-12 16:59:15,867 - Percentage of outliers for label: 2 column: x: 0.0
+2023-03-12 16:59:15,867 - Percentage of outliers for label: 2 column: y: 0.29074643713842246
+2023-03-12 16:59:15,867 - Percentage of outliers for label: 2 column: z: 0.0
+2023-03-12 16:59:15,868 - Interpolating outliers for label: 2 column: x
+2023-03-12 16:59:15,880 - Interpolating outliers for label: 2 column: y
+2023-03-12 16:59:15,888 - Interpolating outliers for label: 2 column: z
+2023-03-12 16:59:15,894 - Done interpolating outliers for label: 2
+2023-03-12 16:59:15,943 - Percentage of outliers for label: 3 column: x: 0.0
+2023-03-12 16:59:15,943 - Percentage of outliers for label: 3 column: y: 0.26635247636517567
+2023-03-12 16:59:15,943 - Percentage of outliers for label: 3 column: z: 0.0
+2023-03-12 16:59:15,943 - Interpolating outliers for label: 3 column: x
+2023-03-12 16:59:15,951 - Interpolating outliers for label: 3 column: y
+2023-03-12 16:59:15,955 - Interpolating outliers for label: 3 column: z
+2023-03-12 16:59:15,960 - Done interpolating outliers for label: 3
+2023-03-12 16:59:15,994 - Percentage of outliers for label: 4 column: x: 0.0
+2023-03-12 16:59:15,994 - Percentage of outliers for label: 4 column: y: 0.28623677155354876
+2023-03-12 16:59:15,994 - Percentage of outliers for label: 4 column: z: 0.0
+2023-03-12 16:59:15,995 - Interpolating outliers for label: 4 column: x
+2023-03-12 16:59:15,999 - Interpolating outliers for label: 4 column: y
+2023-03-12 16:59:16,008 - Interpolating outliers for label: 4 column: z
+2023-03-12 16:59:16,014 - Done interpolating outliers for label: 4
+2023-03-12 16:59:16,044 - Percentage of outliers for label: 5 column: x: 0.0
+2023-03-12 16:59:16,044 - Percentage of outliers for label: 5 column: y: 0.16585861436432905
+2023-03-12 16:59:16,044 - Percentage of outliers for label: 5 column: z: 0.0
+2023-03-12 16:59:16,045 - Interpolating outliers for label: 5 column: x
+2023-03-12 16:59:16,050 - Interpolating outliers for label: 5 column: y
+2023-03-12 16:59:16,057 - Interpolating outliers for label: 5 column: z
+2023-03-12 16:59:16,061 - Done interpolating outliers for label: 5
+2023-03-12 16:59:16,101 - Percentage of outliers for label: 6 column: x: 0.0
+2023-03-12 16:59:16,101 - Percentage of outliers for label: 6 column: y: 0.03145477635106533
+2023-03-12 16:59:16,101 - Percentage of outliers for label: 6 column: z: 0.0
+2023-03-12 16:59:16,101 - Interpolating outliers for label: 6 column: x
+2023-03-12 16:59:16,108 - Interpolating outliers for label: 6 column: y
+2023-03-12 16:59:16,116 - Interpolating outliers for label: 6 column: z
+2023-03-12 16:59:16,121 - Done interpolating outliers for label: 6
+2023-03-12 16:59:16,163 - Percentage of outliers for label: 7 column: x: 0.0
+2023-03-12 16:59:16,163 - Percentage of outliers for label: 7 column: y: 0.2892112318329335
+2023-03-12 16:59:16,163 - Percentage of outliers for label: 7 column: z: 0.0
+2023-03-12 16:59:16,164 - Interpolating outliers for label: 7 column: x
+2023-03-12 16:59:16,169 - Interpolating outliers for label: 7 column: y
+2023-03-12 16:59:16,179 - Interpolating outliers for label: 7 column: z
+2023-03-12 16:59:16,183 - Done interpolating outliers for label: 7
+2023-03-12 16:59:16,223 - Percentage of outliers for label: 8 column: x: 0.0
+2023-03-12 16:59:16,223 - Percentage of outliers for label: 8 column: y: 0.03753351206434316
+2023-03-12 16:59:16,223 - Percentage of outliers for label: 8 column: z: 0.0
+2023-03-12 16:59:16,224 - Interpolating outliers for label: 8 column: x
+2023-03-12 16:59:16,229 - Interpolating outliers for label: 8 column: y
+2023-03-12 16:59:16,234 - Interpolating outliers for label: 8 column: z
+2023-03-12 16:59:16,239 - Done interpolating outliers for label: 8
+2023-03-12 16:59:16,277 - Percentage of outliers for label: 9 column: x: 0.0
+2023-03-12 16:59:16,277 - Percentage of outliers for label: 9 column: y: 0.27787216029349515
+2023-03-12 16:59:16,277 - Percentage of outliers for label: 9 column: z: 0.0
+2023-03-12 16:59:16,278 - Interpolating outliers for label: 9 column: x
+2023-03-12 16:59:16,282 - Interpolating outliers for label: 9 column: y
+2023-03-12 16:59:16,285 - Interpolating outliers for label: 9 column: z
+2023-03-12 16:59:16,292 - Done interpolating outliers for label: 9
+2023-03-12 16:59:16,341 - Percentage of outliers for label: 10 column: x: 0.0
+2023-03-12 16:59:16,341 - Percentage of outliers for label: 10 column: y: 0.28469027797375474
+2023-03-12 16:59:16,341 - Percentage of outliers for label: 10 column: z: 0.0
+2023-03-12 16:59:16,342 - Interpolating outliers for label: 10 column: x
+2023-03-12 16:59:16,347 - Interpolating outliers for label: 10 column: y
+2023-03-12 16:59:16,351 - Interpolating outliers for label: 10 column: z
+2023-03-12 16:59:16,358 - Done interpolating outliers for label: 10
+2023-03-12 16:59:16,399 - Percentage of outliers for label: 11 column: x: 0.0
+2023-03-12 16:59:16,399 - Percentage of outliers for label: 11 column: y: 0.27003245378862706
+2023-03-12 16:59:16,399 - Percentage of outliers for label: 11 column: z: 0.0
+2023-03-12 16:59:16,399 - Interpolating outliers for label: 11 column: x
+2023-03-12 16:59:16,404 - Interpolating outliers for label: 11 column: y
+2023-03-12 16:59:16,407 - Interpolating outliers for label: 11 column: z
+2023-03-12 16:59:16,411 - Done interpolating outliers for label: 11
+2023-03-12 16:59:16,461 - Percentage of outliers for label: 12 column: x: 0.0
+2023-03-12 16:59:16,461 - Percentage of outliers for label: 12 column: y: 0.25668406942288696
+2023-03-12 16:59:16,461 - Percentage of outliers for label: 12 column: z: 0.0
+2023-03-12 16:59:16,462 - Interpolating outliers for label: 12 column: x
+2023-03-12 16:59:16,466 - Interpolating outliers for label: 12 column: y
+2023-03-12 16:59:16,469 - Interpolating outliers for label: 12 column: z
+2023-03-12 16:59:16,473 - Done interpolating outliers for label: 12
+2023-03-12 16:59:16,514 - Dataframe has been interpolated
+2023-03-12 16:59:20,563 - Saving data coordinates to tensor file in folder: coordinates
