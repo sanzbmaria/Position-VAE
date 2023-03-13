@@ -56,7 +56,11 @@ def logger_setup():
 
     logger = logging
 
-    logger.basicConfig(filename=LOG_FILENAME, format='%(asctime)s - %(message)s', level=flags.FLAGS.log_level)
+    logging.basicConfig(filename=LOG_FILENAME, format='%(asctime)s %(levelname)s %(filename)s:%(lineno)d - %(message)s',
+                    level=flags.FLAGS.log_level, force=True)
+
+    # logger.basicConfig(filename=LOG_FILENAME, format='%(asctime)s - %(message)s', level=flags.FLAGS.log_level)
+
 
     logger.info(flags.FLAGS.log_directory)
     logger.info(flags.FLAGS.input_directory)
@@ -84,14 +88,25 @@ def safety_check(path, exist=True, is_dir=True):
     log.info(f'Starting safety check on {path}')
 
     if exist:
-        try:
-            # check if the folder exists
-            if not os.path.exists(path):
-                raise FileNotFoundError(f"The input folder {path} does not exist")
-        except FileNotFoundError as e:
-            log.error(e)
-            print(e)
-            exit(1)
+        # is it a folder?
+        if  os.path.isdir(path):
+            try:
+                # check if the folder exists
+                if not os.path.exists(path):
+                    raise FileNotFoundError(f"The input folder {path} does not exist")
+            except FileNotFoundError as e:
+                log.error(e)
+                print(e)
+                exit(1)
+        else:
+            try:
+                # check if the file exists
+                if not os.path.exists(path):
+                    raise FileNotFoundError(f"The input file {path} does not exist")
+            except FileNotFoundError as e:
+                log.error(e)
+                print(e)
+                exit(1)
 
     if is_dir:
         # check if the input file is a folder
@@ -166,3 +181,24 @@ def to_dataframe(dataframe, data, label):
     df = pd.DataFrame(data=d)
     dataframe = pd.concat([df, dataframe])
     return dataframe
+
+def slash_check(path):
+    """
+    Checks that the path does not end with a slash, if not it adds it
+
+    Args:
+        path (str): The path to check
+
+    Returns:
+        path (str): The path with a slash at the end
+    """
+
+    log.info(f'Checking if the path {path} ends with a slash')
+
+    if path[-1] != '/':
+        path += '/'
+        log.info(f'Path {path} does not end with a slash, adding it')
+        return path
+    else:
+        log.info(f'Path {path} ends with a slash')
+        return path

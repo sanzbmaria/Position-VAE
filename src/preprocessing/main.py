@@ -16,7 +16,7 @@ The shape of the data is (N, 13, 4) where N is the number of frames, 13 is the n
 Before running, first install the dependencies listed in ../README.md.
 
 To run this project, use the following command (example):
-python3 preprocessing/main.py --log_directory=preprocessing/logs --input_directory=data/original/ --output_directory=data/processed/
+python3 src/preprocessing/main.py --log_directory=src/preprocessing/logs --input_directory=src/data/original/ --output_directory=src/data/processed/
 """
 
 
@@ -37,15 +37,21 @@ from utils import setup_utils
 FLAGS = flags.FLAGS
 
 # Define the command-line arguments
-flags.DEFINE_string('log_directory', 'preprocessing/logs', 'Prefix for the log directory.')
-flags.DEFINE_string('input_directory', 'data/original/', 'Input file directory of data to process')
-flags.DEFINE_string('output_directory', 'data/processed/', 'Output file directory of processed data')
+flags.DEFINE_string('log_directory', 'src/preprocessing/logs', 'Prefix for the log directory.')
+flags.DEFINE_string('input_directory', 'src/data/original/', 'Input file directory of data to process')
+flags.DEFINE_string('output_directory', 'src/data/processed/', 'Output file directory of processed data')
+flags.DEFINE_string('log_level', 'INFO', 'Log level to use')
 
 # Parse the command-line arguments
 flags.FLAGS(sys.argv)
 
-
 def main():
+    # safety check on the input and output folder and log folder
+    # all of them should end with a slash
+    flags.input_directory = setup_utils.slash_check(FLAGS.input_directory)
+    flags.output_directory = setup_utils.slash_check(FLAGS.output_directory)
+    flags.log_directory = setup_utils.slash_check(FLAGS.log_directory)
+
 
     setup_utils.logger_setup()
     log.info(f'Running {__file__} with arguments: {sys.argv[1:]}')

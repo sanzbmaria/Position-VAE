@@ -195,9 +195,9 @@ def open_original_to_df(file, to_numeric=False):
 
     """
 
-
+    file_path = os.path.join(flags.FLAGS.input_directory, file)
      # read the json file
-    with open(flags.FLAGS.input_directory + file) as json_file:
+    with open(file_path) as json_file:
         data = json.load(json_file)
 
         # convert the data to a pandas dataframe

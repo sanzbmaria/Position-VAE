@@ -8,7 +8,6 @@ import torch as nn
 
 import pandas as pd
 import local_utils
-from utils import safety_utils as su
 import os
 import matplotlib.pyplot as plt
 import numpy as np
@@ -52,28 +51,22 @@ def outliers_percent():
 
     log.info('Plotting outliers')
 
-    input_dir = flags.FLAGS.input_directory
+    stats_dir = flags.FLAGS.stats_directory
 
     # check if the stats folder exists
-    if not os.path.exists(os.path.join(input_dir, 'plots/stats')):
-        log.error('The stats folder does not exist. Run the stats.py script first')
+    if not os.path.exists(stats_dir):
+        log.error(f'The stats directory {stats_dir} does not exist. Run the stats.py script first')
         exit()
 
-
-    # join the input directory with the stats folder
-    input_dir = os.path.join(input_dir, 'plots/stats')
-
     # print the input directory
-    log.info('Input directory: {}'.format(input_dir))
-
-    su.folder_exists(input_dir)
+    log.info('Stats directory: {}'.format(stats_dir))
 
     data = False
     concatenated_df = pd.DataFrame()
     # load all the json files in the folder
-    for file in os.listdir(input_dir):
+    for file in os.listdir(stats_dir):
         if file.endswith('.json'):
-            path = os.path.join(input_dir, file)
+            path = os.path.join(stats_dir, file)
              # load the json file
             with open(path, 'r') as f:
                 data = json.load(f)
@@ -120,7 +113,8 @@ def outliers_boxplot():
 
     # choose n random files to open and plot
     n = flags.FLAGS.files_to_plot
-    su.folder_exists(input_dir)
+
+    setup_utils.safety_check(input_dir, exist=True, is_dir=True)
 
     # open the folder and randomly select n files
     files = [file for file in os.listdir(input_dir) if file.endswith('.json')]

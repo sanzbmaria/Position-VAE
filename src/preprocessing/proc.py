@@ -14,7 +14,6 @@ import torch as nn
 import os
 import json
 
-from utils import safety_utils as su
 from utils import data_utils as du
 from utils import setup_utils
 
@@ -142,10 +141,6 @@ def main():
 
         # save the dataframe with centering
         save_to_tensor(df, file, type='hip_centered')
-
-        # check if the output directory exists if not create it
-        if not os.path.exists(f'{FLAGS.output_directory}stats'):
-            os.makedirs(f'{FLAGS.output_directory}stats')
 
 
     log.info('Data processing completed')
