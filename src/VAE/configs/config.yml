@@ -1,0 +1,31 @@
+model: 
+  in_dim: 156 # 52 or 156
+  hidden_dims: [128, 128, 64, 64, 32, 32, 16, 16]
+  beta: 3
+  lr: 1e-3
+
+
+data: 
+  dir: 'src/data/processed/landmarkhip_centered/joint.pt'
+  seq_len: 1
+  train_batch_size: 64
+  val_batch_size: 64
+  num_workers: 8
+
+
+trainer_params: 
+  gpus : [0]
+  max_epochs: 100
+
+tensorboard: 
+  logdir: "src/VAE/logdir"
+  name: 'landmarks' # landmarks or no_landmarks
+
+
+plots: 
+  label_path : 'src/data/processed/labels.pkl'
+  min_cluster_size: 10
+  umap_interval : 5
+  umap_input: 10000
+
+

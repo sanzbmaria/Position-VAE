@@ -1,22 +1,22 @@
+import logging
+import logging as log
 import os
 import sys
-import logging as log
-import pandas as pd
-import numpy as np
-import torch as nn
-import logging
-from absl import flags
 
+import numpy as np
+import pandas as pd
+import torch as nn
+from absl import flags
 
 
 def logger_setup():
     """
-        Setup the logger for the project and creates a log file in the log directory.
+    Setup the logger for the project and creates a log file in the log directory.
 
-        Params:
-            None
-        Returns:
-            logger (logging): The logger object
+    Params:
+        None
+    Returns:
+        logger (logging): The logger object
 
     """
 
@@ -35,36 +35,40 @@ def logger_setup():
 
     if len(list_log_dir) != 0:  # For safety, explicitly use len instead of bool
         existing_log_subdirs = [
-            int(filename) for filename in list_log_dir if filename.isdigit()]
+            int(filename) for filename in list_log_dir if filename.isdigit()
+        ]
         if not existing_log_subdirs:
             existing_log_subdirs = [-1]
         new_log_subdir = str(max(existing_log_subdirs) + 1)
         log_dir = os.path.join(log_dir, new_log_subdir)
         os.mkdir(log_dir)
     else:
-        log_dir = os.path.join(log_dir, '0')
+        log_dir = os.path.join(log_dir, "0")
         os.mkdir(log_dir)
 
     ##############################################
     # Load config
     ##############################################
 
-    LOG_FILENAME = r'log_file.out'
+    LOG_FILENAME = r"log_file.out"
     # join the log directory with the log file name
 
     LOG_FILENAME = os.path.join(log_dir, LOG_FILENAME)
 
     logger = logging
 
-    logger.basicConfig(filename=LOG_FILENAME, format='%(asctime)s - %(message)s', level=flags.FLAGS.log_level)
+    logging.basicConfig(
+        filename=LOG_FILENAME,
+        format="%(asctime)s %(levelname)s %(filename)s:%(lineno)d - %(message)s",
+        level=flags.FLAGS.log_level,
+        force=True,
+    )
 
-    logger.info(flags.FLAGS.log_directory)
-    logger.info(flags.FLAGS.input_directory)
-    logger.info(flags.FLAGS.output_directory)
+    # logger.basicConfig(filename=LOG_FILENAME, format='%(asctime)s - %(message)s', level=flags.FLAGS.log_level)
 
-
-    logger.info('Log directory: {}'.format(log_dir))
+    logger.info("Log directory: {}".format(log_dir))
     return logger
+
 
 def safety_check(path, exist=True, is_dir=True):
     """
@@ -81,17 +85,28 @@ def safety_check(path, exist=True, is_dir=True):
 
     """
 
-    log.info(f'Starting safety check on {path}')
+    log.info(f"Starting safety check on {path}")
 
     if exist:
-        try:
-            # check if the folder exists
-            if not os.path.exists(path):
-                raise FileNotFoundError(f"The input folder {path} does not exist")
-        except FileNotFoundError as e:
-            log.error(e)
-            print(e)
-            exit(1)
+        # is it a folder?
+        if os.path.isdir(path):
+            try:
+                # check if the folder exists
+                if not os.path.exists(path):
+                    raise FileNotFoundError(f"The input folder {path} does not exist")
+            except FileNotFoundError as e:
+                log.error(e)
+                print(e)
+                exit(1)
+        else:
+            try:
+                # check if the file exists
+                if not os.path.exists(path):
+                    raise FileNotFoundError(f"The file {path} does not exist")
+            except FileNotFoundError as e:
+                log.error(e)
+                print(e)
+                exit(1)
 
     if is_dir:
         # check if the input file is a folder
@@ -139,7 +154,9 @@ def setup_subfolders(folder_path, sub_folders):
             log.info(f"Created the folder {sub_folder}")
 
         else:
-            log.warn(f"The folder {sub_folder} already exists, the files will be overwritten")
+            log.warn(
+                f"The folder {sub_folder} already exists, the files will be overwritten"
+            )
 
 
 def create_folder(folder_path):
@@ -151,18 +168,51 @@ def create_folder(folder_path):
 
     :return: None
     """
+    # check if the folder exist for each sub-folder
+    # divide the path in sub-folders
+    sub_folders = folder_path.split(os.sep)
 
-    # check if the folder exists
-    if not os.path.exists(folder_path):
-        # create the folder
-        os.mkdir(folder_path)
-        log.info(f"Created the folder {folder_path}")
+    current = sub_folders[0]
+
+    for folder in sub_folders[1:]:
+        # check if the folder exists if not create it
+        if not os.path.exists(current):
+            os.mkdir(current)
+            log.info(f"Created the folder {current}")
+        current = os.path.join(current, folder)
+
+    # check if the folder exists if not create it
+    if not os.path.exists(current):
+        os.mkdir(current)
+        log.info(f"Created the folder {current}")
 
 
 def to_dataframe(dataframe, data, label):
     """converts csv data to pandas dataframe, separating the x y z and labels"""
 
-    d = {'x': data[0], 'y': data[1], 'z':data[2], 'label': label}
+    d = {"x": data[0], "y": data[1], "z": data[2], "label": label}
     df = pd.DataFrame(data=d)
     dataframe = pd.concat([df, dataframe])
     return dataframe
+
+
+def slash_check(path):
+    """
+    Checks that the path does not end with a slash, if not it adds it
+
+    Args:
+        path (str): The path to check
+
+    Returns:
+        path (str): The path with a slash at the end
+    """
+
+    log.info(f"Checking if the path {path} ends with a slash")
+
+    if path[-1] != "/":
+        path += "/"
+        log.info(f"Path {path} does not end with a slash, adding it")
+        return path
+    else:
+        log.info(f"Path {path} ends with a slash")
+        return path

@@ -20,6 +20,7 @@ python3 src/preprocessing/main.py --log_directory=src/preprocessing/logs --input
 """
 
 
+
 import pandas as pd
 import numpy as np
 import json
@@ -31,26 +32,33 @@ import logging as log
 import importlib
 import sys
 
-import proc
+from file_processing import process_file, join_files
+from data_preprocessing import center_hip, calculate_distance, check_hip_centered, add_landmark_location
+
 from utils import setup_utils
+from tqdm import tqdm
 
 FLAGS = flags.FLAGS
 
 # Define the command-line arguments
-flags.DEFINE_string('log_directory', 'src/preprocessing/logs', 'Prefix for the log directory.')
-flags.DEFINE_string('input_directory', 'src/data/original/', 'Input file directory of data to process')
-flags.DEFINE_string('output_directory', 'src/data/processed/', 'Output file directory of processed data')
+flags.DEFINE_string('log_directory', 'src/processing/logs', 'Prefix for the log directory.')
 flags.DEFINE_string('log_level', 'INFO', 'Log level to use')
 
 # Parse the command-line arguments
 flags.FLAGS(sys.argv)
 
+flags.DEFINE_string('input_directory', 'src/data/original/json', 'Input file directory of data to process')
+flags.DEFINE_string('output_directory', 'src/data/processed/', 'Output file directory of processed data')
+
+
+FLAGS = flags.FLAGS
+
 def main():
     # safety check on the input and output folder and log folder
     # all of them should end with a slash
-    flags.input_directory = setup_utils.slash_check(FLAGS.input_directory)
-    flags.output_directory = setup_utils.slash_check(FLAGS.output_directory)
-    flags.log_directory = setup_utils.slash_check(FLAGS.log_directory)
+    FLAGS.input_directory = setup_utils.slash_check(FLAGS.input_directory)
+    FLAGS.output_directory = setup_utils.slash_check(FLAGS.output_directory)
+    FLAGS.log_directory = setup_utils.slash_check(FLAGS.log_directory)
 
 
     setup_utils.logger_setup()
@@ -75,11 +83,31 @@ def main():
 
     ##############################################
     # Load the data and perform pre-processing
+    #############################################
+    
+    # print all the flags
+
+    log.info("Loading data to process")
+
+    files = os.listdir(FLAGS.input_directory)
+
+    # remove the .json from the file name
+    file_name = [file[:-5] for file in files]
+
+    # # interpolate the data, center to hip and get the distance between the hip and the rest of the body parts
+    # for file in tqdm(files):
+    #     process_file(file)
+
+        
+    log.info("Data processing completed")
+    
     ##############################################
-
-    proc.main()
-
-
+    # Join the data and save it
+    ##############################################
+    
+    join_files()
+    
+    
 
 if __name__ == '__main__':
     main()

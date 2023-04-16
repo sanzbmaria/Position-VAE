@@ -7,8 +7,10 @@ This Git repository contains code for exploring and preprocessing data, as well 
 ```
 conda create --name vae && conda activate vae && conda config --append channels conda-forge && conda install --file requirements.txt
 
-python setup.py install
+python3 setup.py install
 ```
+
+The original data should be stored in src/data/original/json
 
 ## Exploration Analysis
 
@@ -23,7 +25,7 @@ python setup.py install
 To run the preprocessing code use the following command (example):
 
 ```
-python3 /src/preprocessing/main.py--log_directory=src/preprocessing/logs --input_directory=src/data/original/ --output_directory=src/data/processed
+python3 src/preprocessing/main.py --log_directory=src/preprocessing/logs --original_directory=src/data/original/ --output_directory=src/data/processed
 ```
 
 ## TODO:
