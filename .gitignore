@@ -190,12 +190,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-## Folders 
-src/data/*
-src/exploration/logdir/*
-src/processing/logdir/*
-src/VAE/logdir/*
-lightning_logs/*
-
-# lr
-.lr_*
