@@ -1250,7 +1250,7 @@ the same subdirectories as 'joint.pt' and 'joint_scaled.pt'.</p>
 
         <span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">na_action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 
-        <span class="n">save_to_tensor</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">du</span><span class="o">.</span><span class="n">save_to_tensor</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">,</span> <span class="n">file_name</span> <span class="o">=</span> <span class="n">file</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
 
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Centering data to hip&quot;</span><span class="p">)</span>
         <span class="n">centered_df</span> <span class="o">=</span> <span class="n">center_hip</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
