@@ -917,6 +917,7 @@
 
 <h1 id="position_vae">Position_VAE<a class="headerlink" href="#position_vae" title="Permanent link">&para;</a></h1>
 <p>This Git repository contains code for exploring and preprocessing data, as well as implementing a Variational Autoencoder (VAE) model and visualizing the learned manifold of the model.</p>
+<hr />
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>To install, clone this repository:</p>
 <pre><code>git clone https://github.com/sanzbmaria/Position_VAE
@@ -924,6 +925,7 @@
 <p>Create and activate a new virtual environment named "vae" using conda, and install the required dependencies using the provided requirements file:</p>
 <pre><code>conda create --name vae &amp;&amp; conda activate vae &amp;&amp; conda config --append channels conda-forge &amp;&amp; conda install --file requirements.txt
 </code></pre>
+<hr />
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>Before training the model, the original data should be stored in src/data/original/json, and processed using the following command:</p>
 <pre><code>python3 src/preprocessing/main.py --log_directory=src/preprocessing/logs --input_directory=src/data/original/ --output_directory=src/data/processed/
@@ -935,6 +937,7 @@
 <pre><code>tensorboard --logdir src/VAE/logdir 
 </code></pre>
 <p>That's it! You should now be able to explore the learned manifold of the VAE model using the visualizations.</p>
+<hr />
 <h2 id="code-documentation">Code Documentation<a class="headerlink" href="#code-documentation" title="Permanent link">&para;</a></h2>
 <h3 id="model">Model<a class="headerlink" href="#model" title="Permanent link">&para;</a></h3>
 <ul>
