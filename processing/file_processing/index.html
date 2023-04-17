@@ -1065,16 +1065,43 @@ the same subdirectories as 'joint.pt' and 'joint_scaled.pt'.</p>
   <div class="doc doc-contents ">
   
       <p>Processes a given file by performing data preprocessing, interpolation, centering, and saving the data as tensors.</p>
-<p>The function performs the following steps:
-1. Opens the original data file and converts it to a DataFrame.
-2. Interpolates the data to fill missing values.
-3. Adds landmark location information to the data.
-4. Decodes the label column back to its original values.
-5. Saves the data in various stages (without centering, with centering) as tensors.
-6. Centers the hip joint in the data.
-7. Checks if the hip has been centered correctly and exits if not.
-8. Saves the centered data as tensors.</p>
-      <p>file (str): The name of the file to process.</p>
+
+<details class="the-function-performs-the-following-steps">
+  <summary>The function performs the following steps</summary>
+  <ol>
+<li>Opens the original data file and converts it to a DataFrame.</li>
+<li>Interpolates the data to fill missing values.</li>
+<li>Adds landmark location information to the data.</li>
+<li>Decodes the label column back to its original values.</li>
+<li>Saves the data in various stages (without centering, with centering) as tensors.</li>
+<li>Centers the hip joint in the data.</li>
+<li>Checks if the hip has been centered correctly and exits if not.</li>
+<li>Saves the centered data as tensors.</li>
+</ol>
+</details>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>file</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>The name of the file to process.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
       <details class="quote">
         <summary>Source code in <code>src/processing/file_processing.py</code></summary>
@@ -1140,17 +1167,17 @@ the same subdirectories as 'joint.pt' and 'joint_scaled.pt'.</p>
 <span class="sd">        Processes a given file by performing data preprocessing, interpolation, centering, and saving the data as tensors.</span>
 
 <span class="sd">        The function performs the following steps:</span>
-<span class="sd">        1. Opens the original data file and converts it to a DataFrame.</span>
-<span class="sd">        2. Interpolates the data to fill missing values.</span>
-<span class="sd">        3. Adds landmark location information to the data.</span>
-<span class="sd">        4. Decodes the label column back to its original values.</span>
-<span class="sd">        5. Saves the data in various stages (without centering, with centering) as tensors.</span>
-<span class="sd">        6. Centers the hip joint in the data.</span>
-<span class="sd">        7. Checks if the hip has been centered correctly and exits if not.</span>
-<span class="sd">        8. Saves the centered data as tensors.</span>
+<span class="sd">            1. Opens the original data file and converts it to a DataFrame.</span>
+<span class="sd">            2. Interpolates the data to fill missing values.</span>
+<span class="sd">            3. Adds landmark location information to the data.</span>
+<span class="sd">            4. Decodes the label column back to its original values.</span>
+<span class="sd">            5. Saves the data in various stages (without centering, with centering) as tensors.</span>
+<span class="sd">            6. Centers the hip joint in the data.</span>
+<span class="sd">            7. Checks if the hip has been centered correctly and exits if not.</span>
+<span class="sd">            8. Saves the centered data as tensors.</span>
 
 <span class="sd">        Parameters:</span>
-<span class="sd">        file (str): The name of the file to process.</span>
+<span class="sd">            file (str): The name of the file to process.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing file: </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
