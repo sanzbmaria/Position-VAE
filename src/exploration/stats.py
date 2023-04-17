@@ -2,20 +2,33 @@
 This module contains functions for calculating statistics on the data.
 It is used to calculate the percentage of outliers in the data and to calculate the mean and standard deviation for each file of the data.
 
+This module processes the data files from the given input directory using the command-line arguments provided. It does the following tasks:
+    - Checks for safety on the input, output and log directories
+    - Loads data from input directory
+    - Calculates stats and creates a json file with an overview of stats
+    - Converts data to tensor and saves it to the 'tensor' folder
+    - Saves the stats data in the form of a pandas dataframe to the 'stats' folder as a pickle file.
+
+Usage:
+    - log_directory: Prefix for the log directory.
+    - log_level: Log level to use
+    - input_directory: Input file directory of data to process
+    - output_directory: Output file directory of processed data
+
+Example:
+    python my_file.py --input_directory=my_input_dir --output_directory=my_output_dir
+
 """
 
 import sys
-
-sys.path.append("src/utils")
-
 
 import json
 import logging
 import os
 import sys
 
-import data_utils as du
-import setup_utils
+import utils.data_utils as du
+import utils.setup_utils as setup_utils
 from absl import flags
 from tqdm import tqdm
 
@@ -42,9 +55,9 @@ flags.DEFINE_string(
 def main():
     # safety check on the input and output folder and log folder
     # all of them should end with a slash
-    flags.input_directory = setup_utils.slash_check(FLAGS.input_directory)
-    flags.output_directory = setup_utils.slash_check(FLAGS.output_directory)
-    flags.log_directory = setup_utils.slash_check(FLAGS.log_directory)
+    FLAGS.input_directory = setup_utils.slash_check(FLAGS.input_directory)
+    FLAGS.output_directory = setup_utils.slash_check(FLAGS.output_directory)
+    FLAGS.log_directory = setup_utils.slash_check(FLAGS.log_directory)
 
     setup_utils.logger_setup()
 
@@ -114,8 +127,8 @@ def main():
         # remove the last folder from the input directory
         # and add 'tensor' to the end
 
-        tensor_path = "/".join(flags.input_directory.split("/")[:-2]) + "/tensor/"
-        pickle_path = "/".join(flags.input_directory.split("/")[:-2]) + "/pickle/"
+        tensor_path = "/".join(FLAGS.input_directory.split("/")[:-2]) + "/tensor/"
+        pickle_path = "/".join(FLAGS.input_directory.split("/")[:-2]) + "/pickle/"
 
         du.save_to_tensor(dataframe, file, type="coordinates", path=tensor_path)
         du.save_to_pickle(dataframe, file, type="dataframe", path=pickle_path)

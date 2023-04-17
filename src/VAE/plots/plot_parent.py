@@ -1,3 +1,15 @@
+"""
+Parent Class that provides methods for visualizing the original and reconstructed data for the model.
+
+Args:
+    data_path (str): The path to the directory where the plots will be saved. Default is 'None'.
+    label_path (str): The path to the file containing the joint labels. Default is 'None'.
+    min_cluster_size (int): The minimum number of samples in a cluster. Default is 10.
+    umap_interval (int): The interval for applying UMAP to the data. Default is 5.
+    umap_input (int): The number of input samples for UMAP. Default is 1000.
+
+"""
+
 import os
 import io
 import re
@@ -34,14 +46,14 @@ import plotly.subplots as sp
 class Plot:
     def __init__(self, data_path: str = 'None', label_path: str = 'None', min_cluster_size: int = 10, umap_interval : int = 5, umap_input: int = 1000) -> None:
         """
-        Plot class for the data.
+        Initializes the Plot class.
 
         Args:
-            - data_path (str): The path to the directory where the plots will be saved. Default is 'None'.
-            - label_path (str): The path to the file containing the joint labels. Default is 'None'.
-            - min_cluster_size (int): The minimum number of samples in a cluster. Default is 10.
-            - umap_interval (int): The interval for applying UMAP to the data. Default is 5.
-            - umap_input (int): The number of input samples for UMAP. Default is 1000.
+            data_path (str): The path to the directory where the plots will be saved. Default is 'None'.
+            label_path (str): The path to the file containing the joint labels. Default is 'None'.
+            min_cluster_size (int): The minimum number of samples in a cluster. Default is 10.
+            umap_interval (int): The interval for applying UMAP to the data. Default is 5.
+            umap_input (int): The number of input samples for UMAP. Default is 1000.
         """
         
         self._data_path = data_path
@@ -89,41 +101,49 @@ class Plot:
     @abstractmethod
     def __call__(self, **kwargs) -> None:
         """
-        Abstract method for the plot class.
+        Abstract method for plotting.
         """
         raise NotImplementedError
     
     @abstractmethod
     def divide_tensor(self, **kwargs):
         """
-        Abstract method for the plot class.
+        Divides the tensor into the different parts (xyz, distance, landmark distance, etc)
         """
         raise NotImplementedError
     
     def plot_landmark_distance_heatmap(self, x_lmk_dist, xhat_lmk_dist):
         """
-        Abstract method for the plot class.
+        Plots the heatmap of the landmark distance. 
         """
         raise NotImplementedError
     
        
-    def recreation_analysis(self, x_xyz, x_dist, xhat_xyz, xhat_dist, x_lmk_dist=None,xhat_lmk_dist=None , z=None, n_timepoints=2, current_epoch=0):
+    def recreation_analysis(self, x_xyz : pd.DataFrame,
+                            xhat_xyz: pd.DataFrame,  
+                            x_dist: pd.DataFrame, 
+                            xhat_dist: pd.DataFrame,
+                            x_lmk_dist=None,
+                            xhat_lmk_dist=None, 
+                            z=None,
+                            n_timepoints=2, 
+                            current_epoch=0):
         """
         Compares the original data with the reconstructed data
         
         Args:
-            - x_xyz : Pandas.df original data xyz values
-            - x_hat: Pandas.df reconstructed data xyz values
-            - x_dist: Pandas.df original data distance from hip values  
-            - xhat_dist: Pandas.df reconstructed data distance from hip values
-            - lmk_dist_diff: (optional) Pandas.df original data distance from landmarks values
-            - z: (optional) tensor encoded latent variables 
-            - n : int number of random samples to compare (pose only)
-            - current_epoch: int current epoch
-        
+            x_xyz (Pandas.df): original data xyz values
+            xhat_xyz (Pandas.df): reconstructed data xyz values
+            x_dist (Pandas.df):  original data distance from hip values  
+            xhat_dist (Pandas.df): reconstructed data distance from hip values
+            x_lmk_dist (Pandas.df): (optional: only for Landmark Version) original data distance from landmarks values
+            xhat_lmk_dist (Pandas.df): (optional: only for Landmark Version) reconstructed data distance from landmarks values
+            z (torch.tensor): (optional: only for Landmark Version) tensor of the model's encoded latent variables 
+            n_timepoints (int): number of random samples to compare (pose only)
+            current_epoch (int): current epoch
         
         Returns: 
-            - fig_dic (dictionary): dictionary with tensors of the figures
+            fig_dic (dict): dictionary with tensors of the figures
         """
         
         # choose n random indexes to plot 
@@ -181,16 +201,16 @@ class Plot:
         return tensor_dict
 
 
-    def error_distribution_plot(self, x, xhat):
+    def error_distribution_plot(self, x : torch.tensor , xhat : torch.tensor):
         """
-        Plots a histogram of the mean squared error (MSE) or mean absolute error (MAE) between the original and recreated data.
+        Plots a histogram of the error between the original and recreated data.
 
         Args:
-            original_data (torch.Tensor): A tensor of shape (num_samples, 52/156) representing the original data.
-            recreated_data (torch.Tensor): A tensor of shape (num_samples, 52/156) representing the recreated data.
+            x (torch.Tensor): A tensor of shape (num_samples, 52/156) representing the original data.
+            xhat (torch.Tensor): A tensor of shape (num_samples, 52/156) representing the recreated data.
 
         Returns:
-            matplotlib.figure.Figure: A Figure object containing the error distribution plot.
+            dict (dic): A dictionary containing the name of the figure and the path to the figure.
         """
         
         x = torch.reshape(x, (x.shape[0],  self.num_joints, -1))
@@ -217,16 +237,16 @@ class Plot:
         return {'error_distribution_fig': tensor_img}
         
 
-    def cluster_plot(self, X, y = None):
+    def cluster_plot(self, X: np.array, y :np.array = None):
         """
         Plots a 3D scatter plot of the input data X with consistent colors for the same label.
 
         Args:
-            X : ndarray The input data to plot in 3D. It must have at least three columns.
-            y : ndarray The labels for the input data. If None, the labels will be generated automatically.
+            X (numpy.array): ndarray The input data to plot in 3D. It must have at least three columns.
+            y (numpy.array): ndarray The labels for the input data. If None, the labels will be generated automatically. (optional)
 
         Returns:
-            - str: The path to the saved image.
+            str (str): The path to the saved image.
         """
 
 
@@ -294,16 +314,16 @@ class Plot:
         
         return path
 
-    def cluster_analysis(self, z):
+    def cluster_analysis(self, z : torch.tensor):
         """
         Applies the UMAP dimensionality reduction technique and HDBSCAN clustering algorithm to input data z, and
         plots a 3D scatter plot of the reduced data with consistent colors for the same label.
 
         Args:
-            - z : tensor The input data to cluster. It must be a PyTorch tensor.
+            z (torch.tensor): tensor The input data to cluster. It must be a PyTorch tensor.
 
         Returns:
-            - dict : A dictionary containing the path to the image file.
+            dict (dict): A dictionary containing the path to the image file.
         """ 
         
         #if z is too large, reduce it to n samples
@@ -338,7 +358,7 @@ class Plot:
         
         return {'UMAP_img': path}
     
-    def calculate_differences(self, x, xhat):
+    def calculate_differences(self, x: pd.DataFrame, xhat:pd.DataFrame):
         """
         Calculates the differences between two Pandas DataFrames `x` and `xhat`.
 
@@ -347,7 +367,7 @@ class Plot:
             xhat (pd.DataFrame): A DataFrame of shape (num_samples, 52) representing the reconstructed data.
 
         Returns:
-            - pd.DataFrame: A DataFrame containing the median differences between the original and reconstructed data, grouped by labels and bins.
+            (pd.DataFrame): A DataFrame containing the median differences between the original and reconstructed data, grouped by labels and bins.
         """
 
         # Make a copy of xhat
@@ -368,7 +388,7 @@ class Plot:
 
         return diff
     
-    def plot_xyz_heatmap(self, diff):
+    def plot_xyz_heatmap(self, diff: pd.DataFrame):
         """
         Plots separate heatmaps for the differences in x, y, and z coordinates.
 
@@ -376,7 +396,7 @@ class Plot:
             diff (pd.DataFrame): A DataFrame containing the median differences between the original and reconstructed data, grouped by labels and bins.
 
         Returns:
-            - dict: A dictionary containing the path to the image file.
+            dict (dict): A dictionary containing the path to the image file.
         """
 
         columns = ["x", "y", "z"]
@@ -407,7 +427,7 @@ class Plot:
             diff (pd.DataFrame): A DataFrame containing the median differences between the original and reconstructed data, grouped by labels and bins.
 
         Returns:
-            - dict: A dictionary containing the path to the image file.
+            dict (dict): A dictionary containing the path to the image file.
         """
     
         heatmap_data = diff.pivot_table(index="labels", columns="bins", values="dist_hip")
@@ -432,11 +452,12 @@ class Plot:
         using the original and recreated dataframes.
 
         Args:
-            - original_df (pandas DataFrame): The original dataframe with columns [index, joint, x, y, z]
-            - recreated_df (pandas DataFrame): The recreated dataframe with columns [index, joint, x, y, z]
-
+            original_df (pandas DataFrame): The original dataframe with columns [index, joint, x, y, z]
+            recreated_df (pandas DataFrame): The recreated dataframe with columns [index, joint, x, y, z]
+            indexes (list): A list of indexes to plot
+            
         Returns:
-            - dict : A dictionary containing the path to the image file.
+            dict (dict) : A dictionary containing the path to the image file.
         """
         
         # todo: add labels to the scatter plot

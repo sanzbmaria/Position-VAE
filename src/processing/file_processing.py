@@ -1,3 +1,20 @@
+"""
+This module contains functions for processing, preprocessing, and saving human joint data in the form of tensors.
+
+Functions:
+    process_file: Processes a given file by performing data preprocessing, interpolation, centering, and saving the data as tensors.
+    save_to_tensor: Saves the data to a tensor file.
+    join_files: Load and concatenate tensors from specified subdirectories, and save the resulting tensors in the same subdirectories as 'joint.pt' and 'joint_scaled.pt'.
+    center_hip: Centers the others joints around the hip.
+    calculate_distance: Calculates the distance between the hip and the rest of the joints.
+    check_hip_centered: Checks if the hip joint has been centered correctly in the given DataFrame.
+    add_landmark_location: Adds the coordinates of the objects (4 barrels and 4 feeders) to the dataframe.
+
+"""
+
+from typing import Union
+
+
 import logging as log
 import os
 import pickle
@@ -12,39 +29,32 @@ import torch as nn
 from absl import flags
 from tqdm import tqdm
 
-from data_preprocessing import (
-    add_landmark_location,
-    calculate_distance,
-    center_hip,
-    check_hip_centered,
-)
 
 from pandas.io.pickle import pickle as pd_pickle
-from utils import data_utils as du, setup_utils
+from utils import data_utils as du
 
+from data_processing import center_hip, calculate_distance, check_hip_centered, add_landmark_location
 
 FLAGS = flags.FLAGS
 
 
-def process_file(file):
+def process_file(file:  str):
     """
         Processes a given file by performing data preprocessing, interpolation, centering, and saving the data as tensors.
 
         The function performs the following steps:
-        1. Opens the original data file and converts it to a DataFrame.
-        2. Interpolates the data to fill missing values.
-        3. Adds landmark location information to the data.
-        4. Decodes the label column back to its original values.
-        5. Saves the data in various stages (without centering, with centering) as tensors.
-        6. Centers the hip joint in the data.
-        7. Checks if the hip has been centered correctly and exits if not.
-        8. Saves the centered data as tensors.
+            1. Opens the original data file and converts it to a DataFrame.
+            2. Interpolates the data to fill missing values.
+            3. Adds landmark location information to the data.
+            4. Decodes the label column back to its original values.
+            5. Saves the data in various stages (without centering, with centering) as tensors.
+            6. Centers the hip joint in the data.
+            7. Checks if the hip has been centered correctly and exits if not.
+            8. Saves the centered data as tensors.
 
         Parameters:
-        - file (str): The name of the file to process.
+            file (str): The name of the file to process.
 
-        Returns:
-        - None
     """
     log.info(f"Processing file: {file}")
 
@@ -63,7 +73,6 @@ def process_file(file):
         "landmark_clean": df_clean_landmark,
     }
 
-
     
     for key, df in tqdm(dfs.items(), desc="Processing dataframes"):
         
@@ -73,7 +82,7 @@ def process_file(file):
 
         log.info("Centering data to hip")
         centered_df = center_hip(df)
-        df_centered = calculate_distance(centered_df)
+        df_centered = calculate_distance(df=centered_df)
         
         if not check_hip_centered(df_centered):
             log.info("Hip has not been centered")
@@ -90,19 +99,19 @@ def process_file(file):
 
     
 
-def save_to_tensor(df, filename, type):
+def save_to_tensor(df , filename: str, type: str):
     """
     Saves the data to a tensor file
 
     parameters:
-        df: the dataframe to save
-        folder: the folder to save the file to
-        filename: the name of the file to save
-
-    returns:
-        None
+        df (pd.DataFrame | pd.Series): the dataframe to save
+        filename (str): the name of the file to save
+        type (str): the type of the file to save
+        
+    side effects:
+        saves the file to the folder as a tensor file with the as type/filename.pt
+        
     """
-
     df = df.rename_axis("MyIdx").sort_values(
         by=["MyIdx", "label"], ascending=[True, True]
     )
@@ -182,11 +191,9 @@ def join_files():
     Load and concatenate tensors from specified subdirectories, and save the resulting tensors in
     the same subdirectories as 'joint.pt' and 'joint_scaled.pt'.
 
-    Args:
-    - None
+    side effects:
+        saves the joint tensors to the folder as a tensor file with the joint.pt and joint_scaled.pt
 
-    Returns:
-    - None
     """
     
     subdirs = [f for f in os.listdir(flags.FLAGS.output_directory) if os.path.isdir(os.path.join(flags.FLAGS.output_directory, f))]

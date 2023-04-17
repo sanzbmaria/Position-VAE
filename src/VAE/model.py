@@ -1,3 +1,15 @@
+"""
+This module defines a Variational Autoencoder (VAE) implemented using PyTorch and PyTorch Lightning.
+
+Classes:
+    - Encoder: An encoder network used in the VAE.
+    - Decoder: A decoder network used in the VAE.
+    - VAE: The main class implementing the VAE.
+
+Example:
+    vae = VAE(in_dim=64,  hidden_dims=[32, 16, 8],  latent_dim=2,  learning_rate=1e-3,  batch_size=32,  num_workers=4,  gpus=1,  max_epochs=100,  early_stop_patience=10,  checkpoint_dir='checkpoints',  checkpoint_filename='vae.ckpt',  log_dir='logs',  log_name='vae',  plotter=Plot_NoLandmarks(),  **kwargs)
+"""
+
 import pytorch_lightning as pl
 import torch.nn as nn
 import torch

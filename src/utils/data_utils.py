@@ -5,21 +5,23 @@ import random
 
 import numpy as np
 import pandas as pd
+from pandas.compat import pandas
 import torch as nn
 from absl import flags
 
 from utils import setup_utils
 
 
-def replace_outliers(df, coordinate="z"):
+def replace_outliers(df: pandas.DataFrame, coordinate: str="z"):
     """
     Replaces outliers in a pandas DataFrame with the previous or next value that is not an outlier.
 
     Parameters:
         df (pandas.DataFrame): The input DataFrame with two columns, 'value' and 'is_outlier'.
+        coordinate (str): The coordinate to replace the outliers in (default: 'z', options: 'x', 'y', 'z') 
 
     Returns:
-        pandas.DataFrame: The modified DataFrame with outliers replaced.
+        df (pandas.DataFrame): The modified DataFrame with outliers replaced.
     """
     # Create a new column called 'value2' that has the same values as 'value'
     df[f"{coordinate}_new"] = df[f"{coordinate}"]
@@ -40,17 +42,18 @@ def replace_outliers(df, coordinate="z"):
     return df
 
 
-def iqr_method(group_data, label, replace=True):
+def iqr_method(group_data: pandas.DataFrame, label: str, replace: bool=True):
     """interpolates the data using the IQR method
 
     Parameters:
         group_data (pandas.DataFrame): The input DataFrame with three columns, 'x', 'y', 'z'
         label (str): The label of the group aka the joint
-        replace (bool): If True, replaces the outliers with the previous or next value that is not an outlier.
+        replace (bool): If True, replaces the outliers with the previous or next value that is not an outlier (default: True)
 
     Returns:
-        pandas.DataFrame: The modified DataFrame with outliers replaced. (if replace=True)
+        df (pandas.DataFrame): The modified DataFrame with outliers replaced. (if replace=True)
         stats (dict): The stats of the group_data
+        group_data (pandas.DataFrame): The original DataFrame without outliers replaced. (if replace=False)
     """
 
     # check if the group_data includes label
@@ -123,20 +126,21 @@ def iqr_method(group_data, label, replace=True):
     return df, stats, group_data
 
 
-def interpolate(dataframe):
+def interpolate(df: pandas.DataFrame):
     """interpolates the data to make it more uniform.
 
     Parameters:
-        dataframe (pandas.DataFrame): The input DataFrame with four columns, 'x', 'y', 'z', and 'label'.
+        df (pandas.DataFrame): The input DataFrame with four columns, 'x', 'y', 'z', and 'label'.
 
     Returns:
-            pandas.DataFrame: The modified DataFrame with outliers replaced."""
+        new_dataframe (pandas.DataFrame): The modified DataFrame with outliers replaced.
+        new_df_outliers (pandas.DataFrame): The DataFrame with outliers marked as 1."""
 
     # order by index
-    dataframe = dataframe.sort_index()
+    df = df.sort_index()
 
     # group by label
-    groups = dataframe.groupby("label")
+    groups = df.groupby("label")
 
     # interpolate
     new_dataframe = pd.DataFrame()
@@ -163,21 +167,21 @@ def interpolate(dataframe):
     return new_dataframe, new_df_outliers
 
             
-def get_stats(dataframe, mapping):
+def get_stats(df: pandas.DataFrame , mapping: dict):
     """Calls the IQR method to get the stats of the data for each label
 
     Parameters:
-        dataframe (pandas.DataFrame): The input DataFrame with four columns, 'x', 'y', 'z', and 'label'.
+        df (pandas.DataFrame): The input DataFrame with four columns, 'x', 'y', 'z', and 'label'.
         mapping (dict): The mapping of the labels to the joints {key: label, value: number}
     Returns:
-            dict: The stats of the data for each label.
-            new_df: The df containing info of whether or not the timepoint is an outlier """
+            all_stats (dict): The stats of the data for each label.
+            new_df (pandas.DataFrame): The df containing info of whether or not the timepoint is an outlier """
 
     # order by index
-    dataframe = dataframe.sort_index()
+    df = df.sort_index()
 
     # group by label
-    groups = dataframe.groupby("label")
+    groups = df.groupby("label")
 
     new_dataframe = pd.DataFrame()
     all_stats = {}
@@ -195,16 +199,18 @@ def get_stats(dataframe, mapping):
     return all_stats, new_dataframe
 
 
-def open_original_to_df(file, to_numeric=False, path=None):
+def open_original_to_df(file: str , path: str, to_numeric: bool=False):
     """
     Opens the original json file and converts it to a pandas dataframe
 
     Parameters:
         file (str): The name of the file to open
-        to_numeric (bool): If True, converts the label to a number instead of a string (required for IQR method)
+        to_numeric (bool): If True, converts the label to a number instead of a string (required for IQR method) (default: False)
         path (str): The path to the file. If None, uses the input_directory flag
+
     Returns:
-        pandas.DataFrame: The converted data with columns 'x', 'y', 'z', and 'label'
+        dataframe (pandas.DataFrame): The converted data with columns 'x', 'y', 'z', and 'label'
+        mapping (dict): The mapping of the labels to the joints {key: label, value: number} (only if to_numeric is True)
 
     """
 
@@ -246,22 +252,22 @@ def open_original_to_df(file, to_numeric=False, path=None):
 
             return df_numeric, mapping
         
-        
-
+    
         return dataframe, None
 
 
-def save_to_tensor(df, filename, type, path=None):
+def save_to_tensor(df :pandas.DataFrame , filename: str, type: str, path: str=None):
     """
-    Saves the data to a tensor file
+    Converts the dataframe to a tensor and saves it to the output directory
 
-    parameters:
-        df: the dataframe to save
-        folder: the folder to save the file to
-        filename: the name of the file to save
+    Parameters:
+        df (pandas.DataFrame):  the dataframe to save
+        filename (str): the name of the file to save
+        type (str): the type of tensor to save (hip_centered or coordinates)
+        path (str): The path to the file. If None, uses the output_directory flag
 
-    returns:
-        None
+    Side Effects:
+       Saves a tensor to the output directory as a .pt file
     """
     if path is None:
         path = flags.FLAGS.output_directory
@@ -309,17 +315,17 @@ def save_to_tensor(df, filename, type, path=None):
     return
 
 
-def save_to_pickle(df, filename, type, path=None):
-    """ "
+def save_to_pickle(df : pandas.DataFrame, filename: str , path: str=None):
+    """ 
     Save the dataframe to pickle format.
 
-     parameters:
-        df: the dataframe to save
-        folder: the folder to save the file to
-        filename: the name of the file to save
+    parameters:
+        df (pandas.Dataframe): the dataframe to save
+        filename (str): the name of the file to save
+        path (str): The path to the file. If None, uses the output_directory flag
 
-    returns:
-        None
+    side effects:
+        Saves the dataframe to the output directory as a pickle file
     """
     if path is None:
         path = flags.FLAGS.output_directory
@@ -339,31 +345,31 @@ def save_to_pickle(df, filename, type, path=None):
     return
 
 
-def select_n_random_files(file_list, n):
+def select_n_random_files(file_list: list[str] , n: int = 1):
     """
     Selects n random files from the list of files
 
-    Args:
-        file_list (list): The list of files to select from
-        n (int): The number of files to select
+    parameters:
+        file_list (list[str]): The list of files to select from 
+        n (int): The number of random files to select (default: 1)
 
-    Returns:
-        list: The list of selected files
+    returns:
+        selected_files (list[str]): A list of paths of the randomly selected files
     """
 
     selected_files = random.sample(file_list, n)
 
     return selected_files
 
-def divide_markers(df):
-    """divides the dataframe which contains all markers into a dictionary with 
+def divide_markers(df: pandas.DataFrame):
+    """Divides the dataframe which contains all markers into a dictionary with 
     individual dataframes for each marker. 
     
-    Args:
-    -   df (pandas.DataFrame): the dataframe containing all markers
+    parameters:
+        df (pandas.DataFrame): the dataframe containing all markers
     
-    Returns:
-    -  dfs_dict (dict): a dictionary with the marker names as keys and the"""
+    returns:
+        dfs_dict (dict): a dictionary with the marker names as keys and the"""
     dfs_dict = {}
 
     for marker in df.label.unique():
@@ -372,19 +378,19 @@ def divide_markers(df):
     return dfs_dict
 
 
-def df_to_numpy(dataframe, time, label=True):
+def df_to_numpy(dataframe: pd.DataFrame, time: int , label: bool=True):
     """Converts a dataframe with the columns, xyz and label to numpy arrays
     
-    Args:
-    -  dataframe (pandas.DataFrame): the dataframe to convert
-    - time (int): the time to select from the dataframe
-    - label (bool): if true, the label column is included in the output
+    parameters:
+        dataframe (pandas.DataFrame): the dataframe to convert
+        time (int): the time to select from the dataframe
+        label (bool): if true, the label column is included in the output (default: True)
     
     returns:
-    - X (numpy.array): the x coordinates
-    - Y (numpy.array): the y coordinates
-    - Z (numpy.array): the z coordinates
-    - Labels (numpy.array): the labels
+        X (numpy.array): the x coordinates
+        Y (numpy.array): the y coordinates
+        Z (numpy.array): the z coordinates
+        Labels (numpy.array): the labels
     """
     
     X = dataframe.loc[[time], ['x']].to_numpy()
@@ -395,3 +401,40 @@ def df_to_numpy(dataframe, time, label=True):
     else: 
         Labels = None
     return X, Y, Z ,Labels
+
+
+def to_dataframe(dataframe, data, label):
+    """converts csv data to pandas dataframe, separating the x y z and labels"""
+
+    d = {"x": data[0], "y": data[1], "z": data[2], "label": label}
+    df = pd.DataFrame(data=d)
+    dataframe = pd.concat([df, dataframe])
+    return dataframe
+
+
+def json_to_pandas(json_file: json):
+    """
+    Convert a json file to a pandas dataframe
+
+    parameters:
+        json_file (json): the json file to convert
+
+    returns: 
+        df (pd.DataFrame): the dataframe with the json data
+
+    """
+
+    log.info("Converting json file to pandas dataframe")
+
+    # convert the json data to a pandas dataframe
+    df = pd.DataFrame(json_file)
+
+    # rename the columns with the value in the row 'label'
+    df = df.set_axis(df.loc["label"], axis=1)
+
+    # drop the row 'label'
+    df.drop("label", inplace=True)
+
+    log.info("Json file loaded into pandas df")
+
+    return df

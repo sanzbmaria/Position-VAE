@@ -1,21 +1,37 @@
+"""
+This module contains functions to plot 3D scatter plots and connecting lines from a pandas DataFrame.
+
+This module contains the following constants:
+    - JOINT_COLORS (dict): A dictionary mapping joint names to their corresponding color values.
+    - LIMB_COLORS (dict): A dictionary mapping limb names to their corresponding color values.
+    - CONNECTIONS (list): A list of lists containing pairs of joints to connect.
+
+This module contains the following functions:
+    - connecting_lines(df, connections): A function that takes a pandas DataFrame with all markers and a list of connections, and returns a dictionary of concatenated DataFrames.
+    - plot_video(df, time, file_name): A function that plots a 3D scatter plot with connecting lines between joints for each frame in a given time range and saves the animation as a GIF file.
+    - plot_frame(df, con_df, i, frames): A function that plots a single frame of a 3D scatter plot with connecting lines.
+"""
+import os
 import random
 
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+import matplotlib
+import pandas as pd
+import imageio
+from tqdm import tqdm
+
 import plotly.express as px
 import plotly.graph_objects as go
 import gif
-import pandas as pd
-from utils import data_utils as du
-import imageio
-import os
-from absl import flags
-import matplotlib
-from tqdm import tqdm
 
+from absl import flags
 import logging as log
+
+from utils import data_utils as du
+
 
 JOINT_COLORS = {'nose': 'lightcoral',
             'head': 'coral', 
@@ -57,8 +73,18 @@ CONNECTIONS = [['Lfoot', 'LKnee'],
                 ['RHand','RShoulder'],
                 ['RShoulder', 'neck' ]]
 
-def connecting_lines(df, connections):
-    """takes a dataframe with all markers and a list of connections and returns a dict"""  
+def connecting_lines(df : pandas.DataFrame, connections : list) -> dict:
+    """
+    Concatenates specified columns from a pandas dataframe `df` and returns a dictionary `c_dict` with keys as 'column_1-column_2' (e.g. 'A-B') and values as the concatenated dataframe for each connection.
+
+    Parameters:
+        df (pandas.DataFrame): The dataframe that contains all the joint markers and their corresponding x, y, and z coordinates.
+        connections (list): A list of connections (each represented as a tuple of two column names) to be concatenated
+
+    Returns:
+        dict (dict): A dictionary where keys are in the format 'column_1-column_2' and values are concatenated dataframes.
+    """
+    
     c_dict = {}
 
     for connection in connections:
@@ -66,7 +92,23 @@ def connecting_lines(df, connections):
     
     return c_dict
 
-def plot_video(df, time, file_name):
+def plot_video(df : pd.DataFrame, time: int, file_name: str):
+    """
+    Generates a GIF of a 3D skeleton animation using a dataframe `df` containing x, y, and z position data
+    for each joint in the monkey skeleton. The GIF covers a `time`-second time window and is saved under the 
+    `file_name` provided in the output directory.
+
+    Parameters:
+        df (pandas.DataFrame): The dataframe containing the position data for each joint in the skeleton
+        time (int): The time in seconds to cover in the generated GIF
+        file_name (str): The name to use for the generated GIF file
+
+    Side Effects:
+        - Creates a directory 'gifs' and 'pics' in the output directory if they don't already exist.
+        - Saves a GIF file and individual PNG frames for each time point in the `time`-second window
+        in the 'gifs' and 'pics' directories, respectively.
+
+    """
     #1. divide the dataframe into a dictionary of dataframes, one for each joint
     dfs_dict = du.divide_markers(df)
 
@@ -127,15 +169,15 @@ def plot_video(df, time, file_name):
             writer.append_data(image)
             matplotlib.pyplot.close()
 
-def plot_frame(df, con_df, i, frames):
+def plot_frame(df : pandas.DataFrame = None, con_df : pandas.DataFrame = None, i : int= None, frames : int = None):
     """
     Plots a single frame of 3D scatter plot of the coordinates and connections between them.
 
     Args:
-        df: A pandas DataFrame containing the coordinates for a single frame.
-        con_df: A pandas DataFrame containing the connections between the coordinates.
-        i: An integer indicating the index of the frame.
-        frames: An integer indicating the total number of frames in the animation.
+        df (pandas.Dataframe): A pandas DataFrame containing the coordinates for a single frame.
+        con_df (pandas.Dataframe): A pandas DataFrame containing the connections between the coordinates.
+        i (int): An integer indicating the index of the frame.
+        frames (int): An integer indicating the total number of frames in the animation.
 
     Returns:
         A plotly Figure object containing the scatter plot of the coordinates and connections.

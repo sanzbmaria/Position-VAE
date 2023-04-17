@@ -5,26 +5,22 @@ This script is used to visualize the data from the json files in order to explor
 import json
 import logging as log
 import os
+from re import S
 
-import local_utils
-import local_utils as lu
+
 import matplotlib.pyplot as plt
-import monkey_video as mkv
-import numpy as np
 import pandas as pd
 from absl import flags
 
 from utils import data_utils as du
-from utils import setup_utils
 from tqdm import tqdm
-import seaborn as sns
 
 
-def outliers_plot(df, title):
+def outliers_plot(df : pandas.DataFrame, title:  str):
     """
     Plot the average percentage of outliers for each joint in a bar chart.
 
-    Args:
+    Parameters:
         df (pandas.DataFrame): A DataFrame containing the average percentage of outliers for each joint.
         title (str): The title of the plot.
 
@@ -60,10 +56,13 @@ def outliers_plot(df, title):
     plt.close()
 
 
-def outliers_percent():
+def outliers_percent(stats_dir: str):
     """
     Loads JSON files containing outlier statistics and plots the average percentage of outliers for each joint and the overall mean.
 
+    Parameters:
+        stats_dir (str): The path to the directory containing the JSON files with the outlier statistics. If None, the path specified in the flags is used.
+    
     Raises:
         FileNotFoundError: If the stats directory or its overview subdirectory does not exist.
 
@@ -75,7 +74,6 @@ def outliers_percent():
 
     log.info("Plotting outliers")
 
-    stats_dir = flags.stats_directory
     stats_overview_dir = os.path.join(stats_dir, 'stats_overview')
 
     # check if the stats folder exists
@@ -100,7 +98,7 @@ def outliers_percent():
 
             data = {key: value["percentages"] for key, value in data.items()}
 
-            data = local_utils.json_to_pandas(data)
+            data = json_to_pandas(data)
 
             # Concatenate the dataframes vertically
             concatenated_df = pd.concat([concatenated_df, data])
@@ -130,9 +128,14 @@ def outliers_percent():
     log.info("Outliers plotted")
 
 
-def outliers_boxplot():
+def outliers_boxplot(json_path: str = None, n_files: int = None, output_file: str = None):
     """
     Loads a specified number of original JSON files and plots a boxplot for each joint coordinate.
+    
+    Parameters: 
+        n_files (int): The number of files to open.
+        json_path (str): The path to the directory containing the original JSON files. If None, the path specified in the flags is used.
+        output_file (str): The path to the output file. If None, the path specified in the flags is used.
     
     Side effects:
         - Opens and concatenates a specified number of randomly selected original JSON files.
@@ -145,10 +148,14 @@ def outliers_boxplot():
 
     # open the original json files and randomly select n files
     log.info("Plotting outliers boxplot")
+    
+    if json_path is None:
+        json_path = os.path.join(flags.FLAGS.original_data_directory, "json")
 
-    json_path = os.path.join(flags.FLAGS.original_data_directory, "json")
-
-    files = lu.open_n_original_files(json_path, flags.FLAGS.n_files)
+    if n_files is None:
+        n_files = flags.FLAGS.n_files
+        
+    files = lu.open_n_original_files(json_path, n_files)
 
     all_files_df = pd.DataFrame()
     for file in files:
@@ -179,8 +186,9 @@ def outliers_boxplot():
     # set the y axis label
     plt.ylabel("Value")
 
-    # save
-    output_file = os.path.join(flags.FLAGS.output_directory, "boxplot")
+    if output_file is None:
+        output_file = os.path.join(flags.FLAGS.output_directory, "boxplot")
+
 
     # create the folder if it doesn't exist
     if not os.path.exists(output_file):
@@ -193,9 +201,15 @@ def outliers_boxplot():
     plt.savefig(output_file)
 
 
-def outlier_event_plot():
+def outlier_event_plot(stats_dir : str = None, output_file : str = None):
     """
     Loads pickled DataFrames containing outlier statistics and plots the events on separate heatmaps for each joint coordinate.
+    
+    Parameters: 
+        stats_dir (str): The path to the directory containing the pickled DataFrames. If None, the path specified in the flags is used.
+        output_file (str): The path to the output file. If None, the path specified in the flags is used.
+        
+    
     Raises:
         FileNotFoundError: If the stats directory or its DataFrame subdirectory does not exist.
 
@@ -212,7 +226,9 @@ def outlier_event_plot():
     log.info("Plotting outliers in historgram")
     print('Ploting Outlier Events')
 
-    stats_dir = flags.stats_directory
+    if stats_dir is None:
+        stats_dir = flags.stats_directory
+        
     stats_df_dir = os.path.join(stats_dir, 'stats_df')
 
     # check if the stats folder exists
@@ -245,7 +261,10 @@ def outlier_event_plot():
     joints = concatenated_df['label'].unique()
 
     # save
-    output_file = os.path.join(flags.FLAGS.output_directory, "histogram")
+    if output_file is None:
+        output_file = flags.FLAGS.output_directory
+        
+    output_file = os.path.join(output_file, "histogram")
 
     # create the folder if it doesn't exist
     if not os.path.exists(output_file):
@@ -354,8 +373,3 @@ def monkey_video():
     print(f"Loading data for monkey video from {dataframe_path}")
 
     print(files)
-
-
-
-if __name__ == "__main__":
-    main()

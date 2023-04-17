@@ -1,21 +1,37 @@
 """Main entry point to run the exploration pipeline.
 
-The exploration pipeline is a series of steps to visualize the original and pre-processed data to get a better understanding of the data.
+This module provides the functionality to run an exploration pipeline, which consists of a series of steps to visualize the original and pre-processed data. This helps to gain a better understanding of the data by creating various plots and visualizations.
+
+The module takes input, output, and log directory paths, as well as the log level, as command-line arguments. It performs a series of safety checks on the directories and sets up the required sub-folders. Then, it visualizes the data by generating different plots using the plots module.
 
 Example:
     python3 exploration/main.py --input_directory=data --output_directory=data/plots --log_directory=exploration/logs --log_level=DEBUG
 
+Attributes:
+    - video_files (int): Number of random files which will be selected to make a gif 
+    - time (int): Number of frames to plot in gif
+    - log_directory (str): Prefix for the log directory.
+    - log_level (str): Log level to use
+    - n_files (int): Number of random files which will be selected to plot
+    - original_data_directory (str): Directory of original data
+    - output_directory (str): Output file directory of processed data
+    - stats_directory (str): Directory where the stats are stored
+
+Example usage:
+>>> python3 exploration/main.py --input_directory=src/data/original --output_directory=src/data/plots --log_directory=src/exploration/logs --log_level=DEBUG
+
 """
 
 
-import logging as log
 import sys
 
-import plots
 from absl import flags
 
-from utils import data_utils as du
+import logging as log
+
+import utils.plot_utils as plots
 from utils import setup_utils
+
 
 FLAGS = flags.FLAGS
 
@@ -49,16 +65,19 @@ flags.DEFINE_string(
     "stats_directory", "src/data/stats", "Directory where the stats are stored"
 )
 
+FLAGS = flags.FLAGS
 
 def main():
+    """Main function to run the exploration pipeline."""
+    
     # safety check on the input and output folder and log folder
     # all of them should end with a slash
-    flags.original_data_directory = setup_utils.slash_check(
+    FLAGS.original_data_directory = setup_utils.slash_check(
         FLAGS.original_data_directory
     )
-    flags.output_directory = setup_utils.slash_check(FLAGS.output_directory)
-    flags.log_directory = setup_utils.slash_check(FLAGS.log_directory)
-    flags.stats_directory = setup_utils.slash_check(FLAGS.stats_directory)
+    FLAGS.output_directory = setup_utils.slash_check(FLAGS.output_directory)
+    FLAGS.log_directory = setup_utils.slash_check(FLAGS.log_directory)
+    FLAGS.stats_directory = setup_utils.slash_check(FLAGS.stats_directory)
 
     setup_utils.logger_setup()
     log.info(f"Running {__file__} with arguments: {sys.argv[1:]}")
@@ -82,9 +101,9 @@ def main():
     # Visualize the data
     ##############################################
 
-    # plots.outliers_percent()
-    # plots.outliers_boxplot()
-    # plots.monkey_video()
+    plots.outliers_percent(FLAGS.stats_directory)
+    plots.outliers_boxplot()
+    plots.monkey_video()
     plots.outlier_event_plot()
 
 

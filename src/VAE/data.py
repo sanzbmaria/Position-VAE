@@ -1,3 +1,18 @@
+"""
+PyTorch Lightning data module for VAEs. 
+
+This module provides train, validation and test dataloaders for the freely moving NHP dataset .
+
+Classes:
+    - NHPDataset: A PyTorch dataset for NHP data.
+    - VAEDataset: A PyTorch Lightning data module for VAEs.
+
+Example:
+    vae_data_module = VAEDataset(data_path='./my_dataset.pt', train_batch_size=32, val_batch_size=64) trainer.fit(model, vae_data_module) 
+
+"""
+
+
 import os
 import torch
 from torch import Tensor
@@ -12,15 +27,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 
-# Add your custom dataset class here
-class TimeSeriesDataset(torch.utils.data.Dataset):
+class NHPDataset(torch.utils.data.Dataset):
     """
     Time series dataset
 
     Args:
         data (torch.Tensor): Time series data
-        seq_len (int, optional): Sequence length. Defaults to 10.
-        type (str, optional): Type of dataset. Defaults to "block" or "sliding".
     """
 
     def __init__(self, data) -> None:
@@ -49,7 +61,6 @@ class VAEDataset(LightningDataModule):
         val_batch_size (int, optional): Validation batch size. Defaults to 8.
         num_workers (int, optional): Number of workers. Defaults to 24.
         pin_memory (bool, optional): Pin memory. Defaults to False.
-        seq_len (int, optional): Sequence length. Defaults to 10.
     """
 
     def __init__(
@@ -97,18 +108,18 @@ class VAEDataset(LightningDataModule):
         # val_data = torch.from_numpy(val_data).float()
 
         # create the dataset
-        self.train_dataset = TimeSeriesDataset(
+        self.train_dataset = NHPDataset(
             train_data)
-        self.val_dataset = TimeSeriesDataset(
+        self.val_dataset = NHPDataset(
             val_data)
-        self.test_dataset = TimeSeriesDataset(
+        self.test_dataset = NHPDataset(
             test_data)
 
     def train_dataloader(self):
         """
         Training dataloader
         Returns:
-            DataLoader: Training dataloader
+            DataLoader (torch.utils.data.DataLoader): Training dataloader
         """
         return DataLoader(
             self.train_dataset,
@@ -122,7 +133,7 @@ class VAEDataset(LightningDataModule):
         """
         Validation dataloader
         Returns:
-            DataLoader: Validation dataloader
+            DataLoader (torch.utils.data.DataLoader): Validation dataloader
         """
         return DataLoader(
             self.val_dataset,
@@ -137,7 +148,7 @@ class VAEDataset(LightningDataModule):
         """
         Test dataloader
         Returns:
-            DataLoader: Test dataloader
+            DataLoader (torch.utils.data.DataLoader): Test dataloader
         """
         return DataLoader(
             self.test_dataset,

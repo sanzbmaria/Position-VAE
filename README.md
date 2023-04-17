@@ -12,12 +12,12 @@ python3 setup.py install
 
 The original data should be stored in src/data/original/json
 
+
 ## Exploration Analysis
 
 ```
- python3 src/exploration/stats.py --log_directory=src/exploration/logs --input_directory=src/data/original --output_directory=src/data/plots/stats
- python3 src/exploration/main.py --input_directory=src/data --output_directory=src/data/plots --log_directory=src/exploration/logs --log_level=INFO
-
+ python3 src/exploration/stats.py 
+ python3 src/exploration/main.py
 ```
 
 ## Preprocessing
@@ -25,14 +25,12 @@ The original data should be stored in src/data/original/json
 To run the preprocessing code use the following command (example):
 
 ```
-python3 src/preprocessing/main.py --log_directory=src/preprocessing/logs --original_directory=src/data/original/ --output_directory=src/data/processed
+python3 src/preprocessing/main.py
 ```
 
-## TODO:
+## Model 
 
-- Exploration :
-  - monkey video / img
-  - Hotspots of the monkey
-- Model
 
-- Literature review
+
+
+

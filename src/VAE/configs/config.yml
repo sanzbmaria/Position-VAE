@@ -6,8 +6,7 @@ model:
 
 
 data: 
-  dir: 'src/data/processed/landmarkhip_centered/joint.pt'
-  seq_len: 1
+  dir: 'src/data/processed/landmark_cleanhip_centered/joint_scaled.pt'
   train_batch_size: 64
   val_batch_size: 64
   num_workers: 8

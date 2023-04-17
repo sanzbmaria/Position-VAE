@@ -1,9 +1,30 @@
-""""Main file for VAE training and testing."""
+"""
+    This script defines the main function to train a Variational Autoencoder (VAE) model with PyTorch Lightning.
+
+    The main function does the following:
+        1. Reads the configuration YAML file containing settings for the VAE model, data, and training parameters.
+        2. Initializes TensorBoardLogger for logging and visualization.
+        3. Initializes LearningRateMonitor for monitoring learning rates.
+        4. Selects the appropriate plotting class based on the configuration.
+        5. Defines the VAE model with the given settings.
+        6. Defines the VAEDataset for loading and preprocessing data.
+        7. Trains the VAE model using the Trainer class from PyTorch Lightning.
+        8. Utilizes ModelCheckpoint for saving the best models.
+        9. Utilizes EarlyStopping to stop training when the validation loss stops improving.
+        10. Utilizes LearningRateFinder to find the optimal learning rate.
+        11. Saves the configuration file to the log directory.
+    
+
+    Example:
+        python main.py --config_path configs/config.yml
+"""
 
 import os
 import yaml
 
 import pytorch_lightning as pl
+import argparse
+
 
 
 from pytorch_lightning import Trainer
@@ -26,13 +47,27 @@ from plots.plot52 import Plot_NoLandmarks
 from plots.plot156 import Plot_Landmarks
 
 
+
+
 def main():
+    
+    # parse the command line arguments
+    
+    parser = argparse.ArgumentParser(description='Entry point to train model.')
+    parser.add_argument('-c', '--config', type=str, help='path to the config file')
+    
+    args = parser.parse_args()
+    
+    config_path = args.config
+    
+    if config_path is None:
+        config_path = 'src/VAE/configs/config.yml'
+    
     # Parse arguments YAML file
 
-    with open('src/VAE/configs/config.yml', 'r') as f:
+    with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
         
-
     torch.set_float32_matmul_precision('medium')
 
     logger = TensorBoardLogger(

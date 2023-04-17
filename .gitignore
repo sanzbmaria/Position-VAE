@@ -201,3 +201,7 @@ lightning_logs/*
 .lr_*
 
 *.png
+
+
+docs/*
+mkdocs.yml

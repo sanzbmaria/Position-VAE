@@ -11,12 +11,13 @@ The output folder will contain the following folders:
     1. coordinates: contains the processed data without hip centering
     2. hip_centered: contains the processed data with hip centering meaning that the hip is the origin of the coordinate system
     4. stats: contains the statistics of the data (mean, std, min, max, percentage_of_outliers)
+
 The shape of the data is (N, 13, 4) where N is the number of frames, 13 is the number of body parts and 4 is the x, y and z coordinates + the distance to the hip.
+Or 
+(N, 13, 8) where N is the number of frames, 13 is the number of body parts and 8 are the x, y and z coordinates, distance to each of the landmarks (4 barrels and 4 feeders) and distanc.e to the hip
 
-Before running, first install the dependencies listed in ../README.md.
-
-To run this project, use the following command (example):
-python3 src/preprocessing/main.py --log_directory=src/preprocessing/logs --input_directory=src/data/original/ --output_directory=src/data/processed/
+Example:
+    python3 src/preprocessing/main.py --log_directory=src/preprocessing/logs --input_directory=src/data/original/ --output_directory=src/data/processed/
 """
 
 
@@ -32,8 +33,7 @@ import logging as log
 import importlib
 import sys
 
-from file_processing import process_file, join_files
-from data_preprocessing import center_hip, calculate_distance, check_hip_centered, add_landmark_location
+from file_processing import join_files
 
 from utils import setup_utils
 from tqdm import tqdm

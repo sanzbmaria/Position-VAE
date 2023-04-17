@@ -9,12 +9,14 @@ import torch as nn
 from absl import flags
 
 
-def logger_setup():
+def logger_setup(log_dir : str , log_level : str ):
     """
     Setup the logger for the project and creates a log file in the log directory.
-
+    
     Params:
-        None
+        log_dir (str): The path of the folder to check if None it will use the log_directory from the flags
+        log_level (str): The log level to use if None it will use the log_level from the flags
+
     Returns:
         logger (logging): The logger object
 
@@ -24,7 +26,8 @@ def logger_setup():
     # Create logger directory
     ##############################################
 
-    log_dir = flags.FLAGS.log_directory
+    if log_dir is None:
+        log_dir = flags.FLAGS.log_directory
 
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
@@ -56,11 +59,14 @@ def logger_setup():
     LOG_FILENAME = os.path.join(log_dir, LOG_FILENAME)
 
     logger = logging
+    
+    if log_level is None:
+        log_level = flags.FLAGS.log_level
 
     logging.basicConfig(
         filename=LOG_FILENAME,
         format="%(asctime)s %(levelname)s %(filename)s:%(lineno)d - %(message)s",
-        level=flags.FLAGS.log_level,
+        level=log_level,
         force=True,
     )
 
@@ -70,30 +76,29 @@ def logger_setup():
     return logger
 
 
-def safety_check(path, exist=True, is_dir=True):
+def safety_check(folder_path : str , exist=True, is_dir=True):
     """
     Perform a safety check on the input and output folder
 
     Params:
-        folder_path (str): The path of the folder to check
-        exist (bool): If True, check if the folder exists
-        is_dir (bool): If True, check if the folder is a directory, else check if it is a file
-
-
-    Returns:
-        None
+        folder_path (str): The path of the folder to check 
+        exist (bool): If True, check if the folder exists (default: True)
+        is_dir (bool): If True, check if the folder is a directory, else check if it is a file (default: True)
+        
+    Side effects:
+        If the folder does not exist it will log the error and exit the program
 
     """
 
-    log.info(f"Starting safety check on {path}")
+    log.info(f"Starting safety check on {folder_path}")
 
     if exist:
         # is it a folder?
-        if os.path.isdir(path):
+        if os.path.isdir(folder_path):
             try:
                 # check if the folder exists
-                if not os.path.exists(path):
-                    raise FileNotFoundError(f"The input folder {path} does not exist")
+                if not os.path.exists(folder_path):
+                    raise FileNotFoundError(f"The input folder {folder_path} does not exist")
             except FileNotFoundError as e:
                 log.error(e)
                 print(e)
@@ -101,8 +106,8 @@ def safety_check(path, exist=True, is_dir=True):
         else:
             try:
                 # check if the file exists
-                if not os.path.exists(path):
-                    raise FileNotFoundError(f"The file {path} does not exist")
+                if not os.path.exists(folder_path):
+                    raise FileNotFoundError(f"The file {folder_path} does not exist")
             except FileNotFoundError as e:
                 log.error(e)
                 print(e)
@@ -128,75 +133,10 @@ def safety_check(path, exist=True, is_dir=True):
             sys.exit(1)
 
 
-def setup_subfolders(folder_path, sub_folders):
-    """
-    Setup the folders for the project if the sub-folders do not exist it will create them
-
-    Params:
-        folder_path (str): The path of the folder to check
-        sub_folders (list): The list of sub-folders to check
-
-    :return: None
-    """
-
-    # check if the folder exists
-    if not os.path.exists(folder_path):
-        # create the folder
-        os.mkdir(folder_path)
-        log.info(f"Created the folder {folder_path}")
-
-    # check if the sub-folders exists
-    for sub_folder in sub_folders:
-        # check if the sub-folder exists
-        if not os.path.exists(os.path.join(folder_path, sub_folder)):
-            # create the sub-folder
-            os.mkdir(os.path.join(folder_path, sub_folder))
-            log.info(f"Created the folder {sub_folder}")
-
-        else:
-            log.warn(
-                f"The folder {sub_folder} already exists, the files will be overwritten"
-            )
 
 
-def create_folder(folder_path):
-    """
-    Create the folder for the project if the folder does not exist it will create it
 
-    Params:
-        folder_path (str): The path of the folder to check
-
-    :return: None
-    """
-    # check if the folder exist for each sub-folder
-    # divide the path in sub-folders
-    sub_folders = folder_path.split(os.sep)
-
-    current = sub_folders[0]
-
-    for folder in sub_folders[1:]:
-        # check if the folder exists if not create it
-        if not os.path.exists(current):
-            os.mkdir(current)
-            log.info(f"Created the folder {current}")
-        current = os.path.join(current, folder)
-
-    # check if the folder exists if not create it
-    if not os.path.exists(current):
-        os.mkdir(current)
-        log.info(f"Created the folder {current}")
-
-
-def to_dataframe(dataframe, data, label):
-    """converts csv data to pandas dataframe, separating the x y z and labels"""
-
-    d = {"x": data[0], "y": data[1], "z": data[2], "label": label}
-    df = pd.DataFrame(data=d)
-    dataframe = pd.concat([df, dataframe])
-    return dataframe
-
-
-def slash_check(path):
+def slash_check(path: str):
     """
     Checks that the path does not end with a slash, if not it adds it
 
