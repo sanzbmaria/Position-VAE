@@ -815,6 +815,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#src.utils.setup_utils.create_folder" class="md-nav__link">
+    create_folder()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#src.utils.setup_utils.logger_setup" class="md-nav__link">
     logger_setup()
   </a>
@@ -824,6 +831,13 @@
         <li class="md-nav__item">
   <a href="#src.utils.setup_utils.safety_check" class="md-nav__link">
     safety_check()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#src.utils.setup_utils.setup_subfolders" class="md-nav__link">
+    setup_subfolders()
   </a>
   
 </li>
@@ -895,8 +909,106 @@
 
 
 
+<h2 id="src.utils.setup_utils.create_folder" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_folder</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span></code>
+
+<a href="#src.utils.setup_utils.create_folder" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Create the folder for the project if the folder does not exist it will create it</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>folder_path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>The path of the folder to check</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>:return: None</p>
+
+      <details class="quote">
+        <summary>Source code in <code>src/utils/setup_utils.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_folder</span><span class="p">(</span><span class="n">folder_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create the folder for the project if the folder does not exist it will create it</span>
+
+<span class="sd">    Params:</span>
+<span class="sd">        folder_path (str): The path of the folder to check</span>
+
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if the folder exist for each sub-folder</span>
+    <span class="c1"># divide the path in sub-folders</span>
+    <span class="n">sub_folders</span> <span class="o">=</span> <span class="n">folder_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+
+    <span class="n">current</span> <span class="o">=</span> <span class="n">sub_folders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">sub_folders</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="c1"># check if the folder exists if not create it</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">current</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created the folder </span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
+
+    <span class="c1"># check if the folder exists if not create it</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">current</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created the folder </span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
 <h2 id="src.utils.setup_utils.logger_setup" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">logger_setup</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">log_level</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">logger_setup</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#src.utils.setup_utils.logger_setup" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -923,7 +1035,7 @@
           </td>
           <td><p>The path of the folder to check if None it will use the log_directory from the flags</p></td>
           <td>
-              <em>required</em>
+                <code>None</code>
           </td>
         </tr>
         <tr>
@@ -933,7 +1045,7 @@
           </td>
           <td><p>The log level to use if None it will use the log_level from the flags</p></td>
           <td>
-              <em>required</em>
+                <code>None</code>
           </td>
         </tr>
     </tbody>
@@ -1023,7 +1135,7 @@
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">logger_setup</span><span class="p">(</span><span class="n">log_dir</span> <span class="p">:</span> <span class="nb">str</span> <span class="p">,</span> <span class="n">log_level</span> <span class="p">:</span> <span class="nb">str</span> <span class="p">):</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">logger_setup</span><span class="p">(</span><span class="n">log_dir</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">log_level</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span><span class="kc">None</span> <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Setup the logger for the project and creates a log file in the log directory.</span>
 
@@ -1252,8 +1364,8 @@
     <span class="k">if</span> <span class="n">is_dir</span><span class="p">:</span>
         <span class="c1"># check if the input file is a folder</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> is not a folder&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">folder_path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">folder_path</span><span class="si">}</span><span class="s2"> is not a folder&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">NotADirectoryError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -1261,12 +1373,126 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># check if the input file is a file</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> is not a file&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">folder_path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">folder_path</span><span class="si">}</span><span class="s2"> is not a file&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="src.utils.setup_utils.setup_subfolders" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">setup_subfolders</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">sub_folders</span><span class="p">)</span></code>
+
+<a href="#src.utils.setup_utils.setup_subfolders" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Setup the folders for the project if the sub-folders do not exist it will create them</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>folder_path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>The path of the folder to check</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>sub_folders</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>The list of sub-folders to check</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>:return: None</p>
+
+      <details class="quote">
+        <summary>Source code in <code>src/utils/setup_utils.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">setup_subfolders</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">sub_folders</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Setup the folders for the project if the sub-folders do not exist it will create them</span>
+
+<span class="sd">    Params:</span>
+<span class="sd">        folder_path (str): The path of the folder to check</span>
+<span class="sd">        sub_folders (list): The list of sub-folders to check</span>
+
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># check if the folder exists</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder_path</span><span class="p">):</span>
+        <span class="c1"># create the folder</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created the folder </span><span class="si">{</span><span class="n">folder_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># check if the sub-folders exists</span>
+    <span class="k">for</span> <span class="n">sub_folder</span> <span class="ow">in</span> <span class="n">sub_folders</span><span class="p">:</span>
+        <span class="c1"># check if the sub-folder exists</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">sub_folder</span><span class="p">)):</span>
+            <span class="c1"># create the sub-folder</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">sub_folder</span><span class="p">))</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created the folder </span><span class="si">{</span><span class="n">sub_folder</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The folder </span><span class="si">{</span><span class="n">sub_folder</span><span class="si">}</span><span class="s2"> already exists, the files will be overwritten&quot;</span>
+            <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
