@@ -1255,7 +1255,7 @@ the same subdirectories as 'joint.pt' and 'joint_scaled.pt'.</p>
         <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;coordinates_clean&#39;</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;hip_centered_clean&#39;</span>
         <span class="k">else</span><span class="p">:</span> 
-            <span class="n">name</span> <span class="o">=</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;hip_centered&#39;</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;_hip_centered&#39;</span>
 
         <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">dfs</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="n">du</span><span class="o">.</span><span class="n">save_to_tensor</span><span class="p">(</span><span class="n">df_centered</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">save_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
