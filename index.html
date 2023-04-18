@@ -879,6 +879,7 @@
 
 <h1 id="position_vae">Position_VAE<a class="headerlink" href="#position_vae" title="Permanent link">&para;</a></h1>
 <p>This Git repository contains code for exploring and preprocessing data, as well as implementing a Variational Autoencoder (VAE) model and visualizing the learned manifold of the model.</p>
+<p>The developed pipeline is capable of processing data, training a model, and visualizing the results for datasets both with and without landmark information. The landmark data encompasses the x, y, and z coordinates for 13 joints, as well as the locations of 4 feeders and 4 barrels. Meanwhile, the data without landmarks solely consists of the x, y, and z coordinates for the 13 joints. This versatile pipeline enables analysis and comparison of results across different dataset configurations to better understand the role of landmark data in the model's performance and its impact on the analysis of the  natural unconstrained behavior of freely moving macaques</p>
 <hr />
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>To install, clone this repository:</p>
@@ -892,9 +893,10 @@
 <p>Before training the model, the original data should be stored in src/data/original/json, and processed using the following command:</p>
 <pre><code>python3 src/preprocessing/main.py --log_directory=src/preprocessing/logs --input_directory=src/data/original/ --output_directory=src/data/processed/
 </code></pre>
-<p>After processing the data the model can be run using : </p>
+<p>After processing the data the model can be run using :</p>
 <pre><code>python3 src/VAE/main.py -c src/VAE/congfigs/config.yml
 </code></pre>
+<p>The explanation for each of the arguments can be found on the models config <a href="Model/config/">documentation</a> page. </p>
 <p>To visualize the training progress, run the following command:</p>
 <pre><code>tensorboard --logdir src/VAE/logdir 
 </code></pre>
