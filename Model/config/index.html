@@ -9,17 +9,17 @@
       
       
       
-        <link rel="prev" href="../data/">
+        <link rel="prev" href="../..">
       
       
-        <link rel="next" href="../model/">
+        <link rel="next" href="../data/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.6">
     
     
       
-        <title>Main - Position VAE</title>
+        <title>Model's Config Arguments - Position VAE</title>
       
     
     
@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#src.VAE.main" class="md-skip">
+        <a href="#model-configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Main
+              Model's Config Arguments
             
           </span>
         </div>
@@ -218,7 +218,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../config/" class="md-tabs__link md-tabs__link--active">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
         Model
       </a>
     </li>
@@ -387,11 +387,83 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../config/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Model's Config Arguments
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Model's Config Arguments
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#model-configuration" class="md-nav__link">
+    Model Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-configuration" class="md-nav__link">
+    Data Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trainer-parameters" class="md-nav__link">
+    Trainer Parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tensorboard-configuration" class="md-nav__link">
+    TensorBoard Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plot-configuration" class="md-nav__link">
+    Plot Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#training-configuration" class="md-nav__link">
+    Training Configuration
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -415,48 +487,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Main
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../main/" class="md-nav__link">
         Main
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#src.VAE.main" class="md-nav__link">
-    src.VAE.main
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -868,55 +903,80 @@
   
 
 
-  <h1>Main</h1>
+  <h1>Model's Config Arguments</h1>
 
-<div class="doc doc-object doc-module">
-
-
-<a id="src.VAE.main"></a>
-  <div class="doc doc-contents first">
-  
-      <p>This script defines the main function to train a Variational Autoencoder (VAE) model with PyTorch Lightning.</p>
-
-<details class="the-main-function-does-the-following">
-  <summary>The main function does the following</summary>
-  <ol>
-<li>Reads the configuration YAML file containing settings for the VAE model, data, and training parameters.</li>
-<li>Initializes TensorBoardLogger for logging and visualization.</li>
-<li>Initializes LearningRateMonitor for monitoring learning rates.</li>
-<li>Selects the appropriate plotting class based on the configuration.</li>
-<li>Defines the VAE model with the given settings.</li>
-<li>Defines the VAEDataset for loading and preprocessing data.</li>
-<li>Trains the VAE model using the Trainer class from PyTorch Lightning.</li>
-<li>Utilizes ModelCheckpoint for saving the best models.</li>
-<li>Utilizes EarlyStopping to stop training when the validation loss stops improving.</li>
-<li>Utilizes LearningRateFinder to find the optimal learning rate.</li>
-<li>Saves the configuration file to the log directory.</li>
-</ol>
-</details>
-<details class="example">
-  <summary>Example</summary>
-  <p>python main.py --config_path configs/config.yml</p>
-</details>
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-  </div>
-
-</div>
+<h2 id="model-configuration">Model Configuration<a class="headerlink" href="#model-configuration" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><code>in_dim</code>: (int) The number of input dimensions that the model expects. It can be either 52, for data without landmarks, or 156 for data that includes landmarks.</p>
+</li>
+<li>
+<p><code>hidden_dims</code>: (list[int]) A list of integers representing the dimensions of the hidden layers of the model.</p>
+</li>
+<li>
+<p><code>beta</code>: (float) The beta parameter used in a beta-VAE. If beta is set to 1, then it is the same as a vanilla VAE.</p>
+</li>
+<li>
+<p><code>lr</code>: (float) The learning rate for the model.</p>
+</li>
+</ul>
+<h2 id="data-configuration">Data Configuration<a class="headerlink" href="#data-configuration" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><code>dir</code>: (str) The path to the input data that has been pre-processed.</p>
+</li>
+<li>
+<p><code>train_batch_size</code>: (int) The batch size used for training.</p>
+</li>
+<li>
+<p><code>val_batch_size</code>: (int) The batch size used for validation.</p>
+</li>
+<li>
+<p><code>num_workers</code>: (int) The number of workers used for loading the data.</p>
+</li>
+</ul>
+<h2 id="trainer-parameters">Trainer Parameters<a class="headerlink" href="#trainer-parameters" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><code>gpus</code>: (list[int]) A list of integers representing the GPUs used for training.</p>
+</li>
+<li>
+<p><code>max_epochs</code>: (int) The maximum number of epochs to train the model.</p>
+</li>
+</ul>
+<h2 id="tensorboard-configuration">TensorBoard Configuration<a class="headerlink" href="#tensorboard-configuration" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><code>logdir</code>: (str) The directory where the logs will be saved.</p>
+</li>
+<li>
+<p><code>name</code>: (str) Used to choose the type of data to plot in TensorBoard. It can be either 'landmarks' or 'no_landmarks'.</p>
+</li>
+</ul>
+<h2 id="plot-configuration">Plot Configuration<a class="headerlink" href="#plot-configuration" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><code>label_path</code>: (str) The path where the labels were saved during processing.</p>
+</li>
+<li>
+<p><code>min_cluster_size</code>: (int) An argument for the HDBSCAN clustering algorithm.</p>
+</li>
+<li>
+<p><code>umap_interval</code>: (int) Specifies how often to plot UMAP during training.</p>
+</li>
+<li>
+<p><code>umap_input</code>: (int) The number of randomly selected time points to plot UMAP for.</p>
+</li>
+</ul>
+<h2 id="training-configuration">Training Configuration<a class="headerlink" href="#training-configuration" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><code>retrieve</code>: (bool) Whether to retrieve a previously saved model to continue training.</p>
+</li>
+<li>
+<p><code>retrieve_path</code>: (str) If <code>retrieve</code> is set to True, then this should specify the path of the saved model.</p>
+</li>
+</ul>
 
 
 
