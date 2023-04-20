@@ -102,13 +102,13 @@ def main():
         process_file(file)
 
         
-    # log.info("Data processing completed")
+    log.info("Data processing completed")
     
     ##############################################
     # Join the data and save it
     ##############################################
     
-    # join_files()
+    join_files()
     
     
 
