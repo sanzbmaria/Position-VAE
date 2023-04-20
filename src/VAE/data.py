@@ -3,28 +3,19 @@ PyTorch Lightning data module for VAEs.
 
 This module provides train, validation and test dataloaders for the freely moving NHP dataset .
 
-Classes:
-    - NHPDataset: A PyTorch dataset for NHP data.
-    - VAEDataset: A PyTorch Lightning data module for VAEs.
-
 Example:
     vae_data_module = VAEDataset(data_path='./my_dataset.pt', train_batch_size=32, val_batch_size=64) trainer.fit(model, vae_data_module) 
 
 """
 
 
-import os
+from typing import Any, Callable, List, Optional, Sequence, Union
+
+import torch as nn
 import torch
-from torch import Tensor
-from pathlib import Path
-from typing import List, Optional, Sequence, Union, Any, Callable
-from torchvision.datasets.folder import default_loader
-from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
-
-
+from pytorch_lightning import LightningDataModule
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
 
 
 class NHPDataset(torch.utils.data.Dataset):
@@ -92,20 +83,9 @@ class VAEDataset(LightningDataModule):
         dataset = dataset.reshape(dataset.shape[0], -1)
 
         # split the dataset
-        train_data, test_data = train_test_split(dataset, shuffle=False)
-        train_data, val_data = train_test_split(train_data, shuffle=False)
+        train_data, test_data = train_test_split(dataset, shuffle=True)
+        train_data, val_data = train_test_split(train_data, shuffle=True)
 
-        # scale the data
-
-        # scaler = MinMaxScaler(feature_range=(-1, 1))
-        # train_data = scaler.fit_transform(train_data)
-        # test_data = scaler.transform(test_data)
-        # val_data = scaler.transform(val_data)
-
-        # convert to tensor
-        # train_data = torch.from_numpy(train_data).float()
-        # test_data = torch.from_numpy(test_data).float()
-        # val_data = torch.from_numpy(val_data).float()
 
         # create the dataset
         self.train_dataset = NHPDataset(

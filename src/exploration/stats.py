@@ -16,23 +16,24 @@ Usage:
     - output_directory: Output file directory of processed data
 
 Example:
-    python my_file.py --input_directory=my_input_dir --output_directory=my_output_dir
+    python stats.py --input_directory=my_input_dir --output_directory=my_output_dir
 
 """
-
-import sys
 
 import json
 import logging
 import os
 import sys
 
-import utils.data_utils as du
-import utils.setup_utils as setup_utils
 from absl import flags
 from tqdm import tqdm
 
-FLAGS = flags.FLAGS
+
+import ultraimport
+
+du = ultraimport('src/utils/data_utils.py')
+setup_utils = ultraimport('src/utils/setup_utils.py')
+
 
 # Define the command-line arguments
 flags.DEFINE_string(
@@ -40,7 +41,6 @@ flags.DEFINE_string(
 )
 flags.DEFINE_string("log_level", "INFO", "Log level to use")
 
-flags.FLAGS(sys.argv)
 
 flags.DEFINE_string(
     "input_directory",
@@ -50,8 +50,9 @@ flags.DEFINE_string(
 flags.DEFINE_string(
     "output_directory", "src/data/", "Output file directory of processed data"
 )
+flags.FLAGS(sys.argv)
 
-
+FLAGS = flags.FLAGS
 def main():
     # safety check on the input and output folder and log folder
     # all of them should end with a slash
@@ -89,10 +90,7 @@ def main():
 
     for file in tqdm(files, desc='Processing files'):
         logging.info(f"Processing file: {file}")
-
-        dataframe, mapping = du.open_original_to_df(
-            file, True, flags.FLAGS.input_directory
-        )
+        dataframe, mapping = du.open_original_to_df(file = file,path= flags.FLAGS.input_directory, to_numeric=True)
         stats, stats_df = du.get_stats(dataframe, mapping)
 
         output_dir_stats = os.path.join(flags.FLAGS.output_directory, "stats")
@@ -131,7 +129,7 @@ def main():
         pickle_path = "/".join(FLAGS.input_directory.split("/")[:-2]) + "/pickle/"
 
         du.save_to_tensor(dataframe, file, type="coordinates", path=tensor_path)
-        du.save_to_pickle(dataframe, file, type="dataframe", path=pickle_path)
+        du.save_to_pickle(df = dataframe, filename = file,path=pickle_path)
         
         logging.info(f"Saving stats to dataframe to: {stats_df_path}")
         # save the pandas pf to pickle

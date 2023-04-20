@@ -2,6 +2,7 @@ import json
 import logging as log
 import os
 import random
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -9,9 +10,8 @@ from pandas.compat import pandas
 import torch as nn
 from absl import flags
 
-from utils import setup_utils
 
-
+# called by iqr_method()
 def replace_outliers(df: pandas.DataFrame, coordinate: str="z"):
     """
     Replaces outliers in a pandas DataFrame with the previous or next value that is not an outlier.
@@ -41,7 +41,7 @@ def replace_outliers(df: pandas.DataFrame, coordinate: str="z"):
     )
     return df
 
-
+# called by interpolate() and get_stats()
 def iqr_method(group_data: pandas.DataFrame, label: str, replace: bool=True):
     """interpolates the data using the IQR method
 
@@ -125,7 +125,7 @@ def iqr_method(group_data: pandas.DataFrame, label: str, replace: bool=True):
 
     return df, stats, group_data
 
-
+# called by file_processing.py
 def interpolate(df: pandas.DataFrame):
     """interpolates the data to make it more uniform.
 
@@ -166,7 +166,7 @@ def interpolate(df: pandas.DataFrame):
     
     return new_dataframe, new_df_outliers
 
-            
+# Called by stats.py           
 def get_stats(df: pandas.DataFrame , mapping: dict):
     """Calls the IQR method to get the stats of the data for each label
 
@@ -189,7 +189,7 @@ def get_stats(df: pandas.DataFrame , mapping: dict):
     for name, group in groups:
         # interpolate
         group = group.drop(columns=["label"])
-        group, stats = iqr_method(group, mapping[name], replace=False)
+        df, stats, _= iqr_method(group, mapping[name], replace=False)
 
         group["label"] = name
 
@@ -198,7 +198,7 @@ def get_stats(df: pandas.DataFrame , mapping: dict):
 
     return all_stats, new_dataframe
 
-
+# Called by stats.py  file_processing.py and plot_utils.py
 def open_original_to_df(file: str , path: str, to_numeric: bool=False):
     """
     Opens the original json file and converts it to a pandas dataframe
@@ -213,6 +213,9 @@ def open_original_to_df(file: str , path: str, to_numeric: bool=False):
         mapping (dict): The mapping of the labels to the joints {key: label, value: number} (only if to_numeric is True)
 
     """
+    
+    if path is None:
+        path = FLAGS.input_directory
 
     # read the json file
     with open(os.path.join(path, file)) as json_file:
@@ -225,7 +228,7 @@ def open_original_to_df(file: str , path: str, to_numeric: bool=False):
         for label in data["coords_3d"].keys():
             if label == "com":
                 continue
-            dataframe = setup_utils.to_dataframe(
+            dataframe = to_dataframe(
                 dataframe, np.asanyarray(data["coords_3d"][label]["xyz"]), label
             )
 
@@ -256,65 +259,72 @@ def open_original_to_df(file: str , path: str, to_numeric: bool=False):
         return dataframe, None
 
 
-def save_to_tensor(df :pandas.DataFrame , filename: str, type: str, path: str=None):
+def save_to_tensor(df :pd.DataFrame , filename: str, type: str, path: str=None, save_labels: bool=True):
     """
     Converts the dataframe to a tensor and saves it to the output directory
 
-    Parameters:
+
+    parameters:
         df (pandas.DataFrame):  the dataframe to save
         filename (str): the name of the file to save
         type (str): the type of tensor to save (hip_centered or coordinates)
         path (str): The path to the file. If None, uses the output_directory flag
-
-    Side Effects:
-       Saves a tensor to the output directory as a .pt file
+        save_labels (bool): If true, saves the labels as a pickle file
+        
+    side effects:
+        saves the file to the folder as a tensor file with the as type/filename.pt
+        
     """
-    if path is None:
-        path = flags.FLAGS.output_directory
 
+    
     df = df.rename_axis("MyIdx").sort_values(
         by=["MyIdx", "label"], ascending=[True, True]
     )
+    
+    if path is None:
+        path = flags.FLAGS.output_directory
+
+    
+    if save_labels:
+        unique_labels = df['label'].unique()   
+        unique_labels_dict = {i:label for i, label in enumerate(unique_labels)}
+        
+
+        folder_labels = os.path.join(flags.FLAGS.output_directory, f"labels.pkl")
+    
+        if not os.path.exists(folder_labels):
+            # Save the dictionary as a pickle file
+            with open(folder_labels, 'wb') as f:
+                pickle.dump(unique_labels_dict, f)
 
     # drop the label values
     df_tmp = df.drop(columns=["label"])
     
     # combine the columns into list
     df_tmp["combined"] = df_tmp.values.tolist()
-
     # join the rows with the same index
     df_tmp = df_tmp.groupby("MyIdx")["combined"].apply(list).reset_index()
 
     # # convert the list of coordinates into a torch tensor
     model_tensor = nn.tensor(df_tmp["combined"].values.tolist())
 
-    if type == "hip_centered":
-        folder = "hip_centered"
-
-        # reshape the tensor so that the shape is (number of frames, 13 * 4) (13 joints, 3 coordinates + distance to hip)
-        model_tensor = model_tensor.view(
-            model_tensor.shape[0], model_tensor.shape[1] * model_tensor.shape[2]
-        )
-    else:
-        folder = "coordinates"
-        # reshape the tensor so that the shape is (number of frames, 13, 3) (13 joints, 3 coordinates)
-        model_tensor = model_tensor.view(-1, 13, 3)
+    folder = type
+        
+    # reshape the tensor so that the shape is (number of frames, ??? ) 
+    model_tensor = model_tensor.view(
+        model_tensor.shape[0], model_tensor.shape[1] * model_tensor.shape[2])
 
     # save the tensor
-    # join the output directory with the folder
-    folder = os.path.join(path, folder)
+    folder = os.path.join(flags.FLAGS.output_directory, folder)
+    
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
     log.info(f"Saving tensor to {folder}/{filename}.pt")
 
-    if not os.path.exists(folder):
-        log.info(f"Creating folder: {folder}")
-        os.makedirs(folder)
-
     nn.save(model_tensor, f"{folder}/{filename}.pt")
 
-    return
-
-
+# called by stats.py
 def save_to_pickle(df : pandas.DataFrame, filename: str , path: str=None):
     """ 
     Save the dataframe to pickle format.
@@ -344,8 +354,8 @@ def save_to_pickle(df : pandas.DataFrame, filename: str , path: str=None):
 
     return
 
-
-def select_n_random_files(file_list: list[str] , n: int = 1):
+# called by plot_utils.py
+def select_n_random_files(file_list , n: int = 1):
     """
     Selects n random files from the list of files
 
@@ -361,6 +371,7 @@ def select_n_random_files(file_list: list[str] , n: int = 1):
 
     return selected_files
 
+# CALLED by monkey_video.py
 def divide_markers(df: pandas.DataFrame):
     """Divides the dataframe which contains all markers into a dictionary with 
     individual dataframes for each marker. 
@@ -378,50 +389,25 @@ def divide_markers(df: pandas.DataFrame):
     return dfs_dict
 
 
-def df_to_numpy(dataframe: pd.DataFrame, time: int , label: bool=True):
-    """Converts a dataframe with the columns, xyz and label to numpy arrays
-    
-    parameters:
-        dataframe (pandas.DataFrame): the dataframe to convert
-        time (int): the time to select from the dataframe
-        label (bool): if true, the label column is included in the output (default: True)
-    
-    returns:
-        X (numpy.array): the x coordinates
-        Y (numpy.array): the y coordinates
-        Z (numpy.array): the z coordinates
-        Labels (numpy.array): the labels
-    """
-    
-    X = dataframe.loc[[time], ['x']].to_numpy()
-    Y = dataframe.loc[[time], ['y']].to_numpy()
-    Z = dataframe.loc[[time], ['y']].to_numpy()
-    if label:
-        Labels = dataframe.loc[[time], ['label']].to_numpy()
-    else: 
-        Labels = None
-    return X, Y, Z ,Labels
 
 
 def to_dataframe(dataframe, data, label):
     """converts csv data to pandas dataframe, separating the x y z and labels"""
 
-    d = {"x": data[0], "y": data[1], "z": data[2], "label": label}
+    d = {'x': data[0], 'y': data[1], 'z':data[2], 'label': label}
     df = pd.DataFrame(data=d)
     dataframe = pd.concat([df, dataframe])
     return dataframe
 
 
+
 def json_to_pandas(json_file: json):
     """
     Convert a json file to a pandas dataframe
-
     parameters:
         json_file (json): the json file to convert
-
     returns: 
         df (pd.DataFrame): the dataframe with the json data
-
     """
 
     log.info("Converting json file to pandas dataframe")

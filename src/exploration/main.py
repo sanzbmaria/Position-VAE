@@ -23,15 +23,16 @@ Example usage:
 """
 
 
+import logging as log
 import sys
 
 from absl import flags
 
-import logging as log
 
-import utils.plot_utils as plots
-from utils import setup_utils
+import ultraimport
 
+plots = ultraimport('src/utils/plot_utils.py')
+setup_utils = ultraimport('src/utils/setup_utils.py')
 
 FLAGS = flags.FLAGS
 
@@ -100,10 +101,14 @@ def main():
     ##############################################
     # Visualize the data
     ##############################################
-
+    
+    print("Plotting outliers percent")
     plots.outliers_percent(FLAGS.stats_directory)
+    print("Plotting outliers boxplot")
     plots.outliers_boxplot()
+    print("Plotting outliers event plot")
     plots.monkey_video()
+    print("Plotting pose video")
     plots.outlier_event_plot()
 
 

@@ -10,29 +10,24 @@ Args:
 
 """
 
-import os
 import io
+import os
+import pickle
 import re
 import time
-import pickle
+from abc import abstractmethod
 
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import hdbscan
-import umap 
-
+import umap
+from mpl_toolkits.mplot3d import Axes3D, axis3d
 import matplotlib
-from mpl_toolkits.mplot3d import Axes3D
-from mpl_toolkits.mplot3d.axes3d import axis3d
 import matplotlib.pyplot as plt
-
-from abc import abstractmethod
-
 import torch
 from torch import tensor
 import torchvision.transforms as transforms
-
 from PIL import Image
 from umap import UMAP
 
@@ -197,7 +192,8 @@ class Plot:
             img = Image.open(fig_dict[fig])  
             tensor_img = self.transform(img)
             tensor_dict[fig] = tensor_img
-
+        
+        matplotlib.pyplot.close()
         return tensor_dict
 
 
@@ -489,7 +485,7 @@ class Plot:
         # Create a figure with n_timepoints rows and one column of subplots
         fig, axs = plt.subplots(n_indexes, 2, sharex=False, subplot_kw={'projection': '3d'}, figsize=(10, 5 * n_indexes))
 
-
+    
         # Iterate over each group and create a 3D plot
         for row, (grouped_orig, grouped_recr) in enumerate(zip(original_grouped_index, recreated_grouped_index)):
             # Plot each joint

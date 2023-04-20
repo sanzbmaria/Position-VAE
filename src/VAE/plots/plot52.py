@@ -9,21 +9,16 @@ Args:
 
 """
 
+import matplotlib
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D, axis3d
 import numpy as np
 import pandas as pd
 import seaborn as sns
-
-import matplotlib
-from mpl_toolkits.mplot3d import Axes3D
-from mpl_toolkits.mplot3d.axes3d import axis3d
-import matplotlib.pyplot as plt
-
 import torch
 from torch import tensor
 import torchvision.transforms as transforms
-
 from PIL import Image
-
 
 import plotly.express as px
 import plotly.graph_objs as go
@@ -32,6 +27,7 @@ import plotly.io as pio
 import plotly.subplots as sp
 
 from .plot_parent import Plot
+
 
 class Plot_NoLandmarks(Plot):
     

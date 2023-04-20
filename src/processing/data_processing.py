@@ -1,5 +1,5 @@
 """
-This module contains functions to preprocess and analyze 3D joint position data from motion capture systems.
+This module contains functions to preprocess and analyze 3D joint position data from the freely moving NHP dataset.
 
 Functions:
     - center_hip(df): Centers all the other joints around the hip joint.
@@ -12,17 +12,16 @@ Functions:
 
 import logging as log
 
-from enum import unique
-
 import numpy as np
 import pandas as pd
 from scipy.sparse import coo
+from scipy.spatial.distance import cdist
 import torch as nn
 
 from absl import flags
 from tqdm import tqdm
 
-from scipy.spatial.distance import cdist
+from enum import unique
 
 
 FLAGS = flags.FLAGS
@@ -142,3 +141,51 @@ def add_landmark_location(df: pd.DataFrame):
     df_lmks.sort_index(inplace=True)
 
     return df_lmks
+
+
+def remove_rows(df: pd.DataFrame, n: float, columns: list = ['x' ,'y', 'z'], type = 'g') -> pd.DataFrame:
+    """
+    Removes rows from a dataframe where any of the coordinate columns have a value greater than a given threshold.
+
+    Parameters:
+        df (pd.DataFrame): The input dataframe.
+        n (float): The threshold value for filtering rows.
+        columns (list): A list of column names to check for the threshold value. Defaults to ['x', 'y', 'z'].
+
+    Returns:
+        pd.DataFrame: A new dataframe with the rows removed where any of the specified columns have a value greater
+        than the threshold.
+    """
+
+    if type == 'g':
+        # create a boolean mask where any value in specified columns is greater than n
+        mask = df[columns].apply(lambda x: (x > n)).any(axis=1)
+    else: 
+        mask = df[columns].apply(lambda x: (x < n)).any(axis=1)
+
+    indexes_to_drop = df.loc[mask, :].index.unique()
+
+    # drop all rows with those index values
+    df = df.drop(indexes_to_drop)
+
+    return df
+
+
+
+def check_index_row_count(df: pd.DataFrame,  expected_count: int = 13):
+    """
+    Checks if each index in a dataframe has the expected number of rows.
+
+    Parameters:
+        df (pd.DataFrame): The input dataframe.
+        expected_count (int): The expected number of rows per index. Defaults to 13.
+
+    Returns:
+        None. Prints a message for any index that doesn't have the expected number of rows.
+    """
+    row_counts = df.index.value_counts()
+    
+    incorrect_indexes = [index for index, count in row_counts.items() if count != expected_count]
+    
+    if incorrect_indexes:
+        raise ValueError(f"The following indexes don't have {expected_count} rows: {incorrect_indexes}")

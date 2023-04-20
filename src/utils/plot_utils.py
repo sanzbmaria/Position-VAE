@@ -1,5 +1,5 @@
 """
-This script is used to visualize the data from the json files in order to explore the data
+This module is used to visualize the data from the json files in order to explore the data
 """
 
 import json
@@ -12,11 +12,17 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from absl import flags
 
-from utils import data_utils as du
 from tqdm import tqdm
 
 
-def outliers_plot(df : pandas.DataFrame, title:  str):
+import ultraimport
+
+du = ultraimport('src/utils/data_utils.py')
+fu = ultraimport('src/utils/file_utils.py')
+
+from tqdm import tqdm
+
+def outliers_plot(df : pd.DataFrame, title:  str):
     """
     Plot the average percentage of outliers for each joint in a bar chart.
 
@@ -98,7 +104,7 @@ def outliers_percent(stats_dir: str):
 
             data = {key: value["percentages"] for key, value in data.items()}
 
-            data = json_to_pandas(data)
+            data = du.json_to_pandas(data)
 
             # Concatenate the dataframes vertically
             concatenated_df = pd.concat([concatenated_df, data])
@@ -155,11 +161,11 @@ def outliers_boxplot(json_path: str = None, n_files: int = None, output_file: st
     if n_files is None:
         n_files = flags.FLAGS.n_files
         
-    files = lu.open_n_original_files(json_path, n_files)
+    files = fu.open_n_original_files(json_path, n_files)
 
     all_files_df = pd.DataFrame()
-    for file in files:
-        dataframe, _ = du.open_original_to_df(file, False, json_path)
+    for file in tqdm(files, desc='Processing Files'):
+        dataframe, _ = du.open_original_to_df(file = file, to_numeric= False, path = json_path)
 
         all_files_df = pd.concat([all_files_df, dataframe])
 
