@@ -996,10 +996,7 @@
 
       <details class="quote">
         <summary>Source code in <code>src/exploration/main.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 71</span>
 <span class="normal"> 72</span>
 <span class="normal"> 73</span>
 <span class="normal"> 74</span>
@@ -1033,7 +1030,14 @@
 <span class="normal">102</span>
 <span class="normal">103</span>
 <span class="normal">104</span>
-<span class="normal">105</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Main function to run the exploration pipeline.&quot;&quot;&quot;</span>
 
     <span class="c1"># safety check on the input and output folder and log folder</span>
@@ -1067,9 +1071,13 @@
     <span class="c1"># Visualize the data</span>
     <span class="c1">##############################################</span>
 
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plotting outliers percent&quot;</span><span class="p">)</span>
     <span class="n">plots</span><span class="o">.</span><span class="n">outliers_percent</span><span class="p">(</span><span class="n">FLAGS</span><span class="o">.</span><span class="n">stats_directory</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plotting outliers boxplot&quot;</span><span class="p">)</span>
     <span class="n">plots</span><span class="o">.</span><span class="n">outliers_boxplot</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plotting outliers event plot&quot;</span><span class="p">)</span>
     <span class="n">plots</span><span class="o">.</span><span class="n">monkey_video</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plotting pose video&quot;</span><span class="p">)</span>
     <span class="n">plots</span><span class="o">.</span><span class="n">outlier_event_plot</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
       </details>

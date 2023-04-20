@@ -819,6 +819,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#src.utils.data_utils.json_to_pandas" class="md-nav__link">
+    json_to_pandas()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#src.utils.data_utils.open_original_to_df" class="md-nav__link">
     open_original_to_df()
   </a>
@@ -1177,7 +1184,7 @@ individual dataframes for each marker. </p>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
         <span class="c1"># interpolate</span>
         <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
-        <span class="n">group</span><span class="p">,</span> <span class="n">stats</span> <span class="o">=</span> <span class="n">iqr_method</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">mapping</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span> <span class="n">iqr_method</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">mapping</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="n">group</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
 
@@ -1591,6 +1598,115 @@ individual dataframes for each marker. </p>
 
 
     <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">group_data</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="src.utils.data_utils.json_to_pandas" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">json_to_pandas</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span></code>
+
+<a href="#src.utils.data_utils.json_to_pandas" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Convert a json file to a pandas dataframe</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>json_file</code></td>
+          <td>
+                <code>json</code>
+          </td>
+          <td><p>the json file to convert</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>df</code></td>          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>the dataframe with the json data</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+      <details class="quote">
+        <summary>Source code in <code>src/utils/data_utils.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">json_to_pandas</span><span class="p">(</span><span class="n">json_file</span><span class="p">:</span> <span class="n">json</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a json file to a pandas dataframe</span>
+<span class="sd">    parameters:</span>
+<span class="sd">        json_file (json): the json file to convert</span>
+<span class="sd">    returns: </span>
+<span class="sd">        df (pd.DataFrame): the dataframe with the json data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Converting json file to pandas dataframe&quot;</span><span class="p">)</span>
+
+    <span class="c1"># convert the json data to a pandas dataframe</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+    <span class="c1"># rename the columns with the value in the row &#39;label&#39;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># drop the row &#39;label&#39;</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Json file loaded into pandas df&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
