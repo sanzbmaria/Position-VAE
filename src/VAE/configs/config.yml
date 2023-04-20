@@ -1,12 +1,13 @@
 model: 
   in_dim: 156 # 52 or 156
-  hidden_dims: [128, 128, 64, 64, 32, 32, 16, 16]
-  beta: 3
+  hidden_dims: []
+  beta: 1
   lr: 1e-3
+  latent_dim: 24
 
 
 data: 
-  dir: 'src/data/processed/landmark_cleanhip_centered/joint_scaled.pt'
+  dir: 'src/data/processed/data/concatenated_tensor.pt'
   train_batch_size: 64
   val_batch_size: 64
   num_workers: 8
@@ -14,7 +15,7 @@ data:
 
 trainer_params: 
   gpus : [0]
-  max_epochs: 100
+  max_epochs: 200
 
 tensorboard: 
   logdir: "src/VAE/logdir"
@@ -24,7 +25,10 @@ tensorboard:
 plots: 
   label_path : 'src/data/processed/labels.pkl'
   min_cluster_size: 10
-  umap_interval : 5
+  umap_interval : 2
   umap_input: 10000
 
 
+train: 
+  retrive : False
+  retrive_path : ''

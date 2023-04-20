@@ -11,26 +11,27 @@ This module contains the following functions:
     - plot_video(df, time, file_name): A function that plots a 3D scatter plot with connecting lines between joints for each frame in a given time range and saves the animation as a GIF file.
     - plot_frame(df, con_df, i, frames): A function that plots a single frame of a 3D scatter plot with connecting lines.
 """
+
+import logging as log
 import os
 import random
 
+import imageio
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
 import matplotlib
 import pandas as pd
-import imageio
-from tqdm import tqdm
+from mpl_toolkits.mplot3d import Axes3D
 
 import plotly.express as px
 import plotly.graph_objects as go
 import gif
 
 from absl import flags
-import logging as log
+from tqdm import tqdm
 
 from utils import data_utils as du
+
 
 
 JOINT_COLORS = {'nose': 'lightcoral',

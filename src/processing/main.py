@@ -20,23 +20,25 @@ Example:
     python3 src/preprocessing/main.py --log_directory=src/preprocessing/logs --input_directory=src/data/original/ --output_directory=src/data/processed/
 """
 
-
-
-import pandas as pd
-import numpy as np
-import json
-import os
-import torch as nn
-from absl import flags
-from absl import app
-import logging as log
 import importlib
+import json
+import logging as log
+import os
 import sys
 
-from file_processing import join_files
+import numpy as np
+import pandas as pd
+import torch as nn
 
-from utils import setup_utils
+from absl import app
+from absl import flags
 from tqdm import tqdm
+
+from file_processing import join_files, process_file
+
+from ultraimport import ultraimport
+setup_utils = ultraimport('src/utils/setup_utils.py')
+
 
 FLAGS = flags.FLAGS
 
@@ -44,11 +46,12 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('log_directory', 'src/processing/logs', 'Prefix for the log directory.')
 flags.DEFINE_string('log_level', 'INFO', 'Log level to use')
 
-# Parse the command-line arguments
-flags.FLAGS(sys.argv)
 
 flags.DEFINE_string('input_directory', 'src/data/original/json', 'Input file directory of data to process')
 flags.DEFINE_string('output_directory', 'src/data/processed/', 'Output file directory of processed data')
+
+# Parse the command-line arguments
+flags.FLAGS(sys.argv)
 
 
 FLAGS = flags.FLAGS
@@ -95,17 +98,17 @@ def main():
     file_name = [file[:-5] for file in files]
 
     # # interpolate the data, center to hip and get the distance between the hip and the rest of the body parts
-    # for file in tqdm(files):
-    #     process_file(file)
+    for file in tqdm(files):
+        process_file(file)
 
         
-    log.info("Data processing completed")
+    # log.info("Data processing completed")
     
     ##############################################
     # Join the data and save it
     ##############################################
     
-    join_files()
+    # join_files()
     
     
 

@@ -9,23 +9,16 @@ Args:
 
 """
 
-from .plot_parent import Plot
-
+import matplotlib
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D, axis3d
 import numpy as np
 import pandas as pd
 import seaborn as sns
-
-import matplotlib
-from mpl_toolkits.mplot3d import Axes3D
-from mpl_toolkits.mplot3d.axes3d import axis3d
-import matplotlib.pyplot as plt
-
 import torch
 from torch import tensor
 import torchvision.transforms as transforms
-
 from PIL import Image
-
 
 import plotly.express as px
 import plotly.graph_objs as go
@@ -33,6 +26,7 @@ import plotly.graph_objs.scattermapbox as smb
 import plotly.io as pio
 import plotly.subplots as sp
 
+from .plot_parent import Plot
 
 class Plot_Landmarks(Plot):
     def __init__(self, data_path: str = 'None', label_path: str = 'None', min_cluster_size: int = 10, umap_interval : int = 5, umap_input: int = 1000, **kwargs):
